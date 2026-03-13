@@ -2,15 +2,14 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Помощь в решении логарифмов — Образовательный проект Никиты Гордеева</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Помощь в решении логарифмов — Проект Никиты Гордеева</title>
     <link rel="icon" type="image/jpeg" href="favicon.jpg">
     <style>
         /* =========================================
            БЛОК ПЕРЕМЕННЫХ И ТЕМ ОФОРМЛЕНИЯ
            ========================================= */
         :root {
-            /* Тема 1: Тёмно-бирюзовая (Основная) */
             --bg-grad: linear-gradient(135deg, #121417 0%, #0a0b0d 100%);
             --cont-bg: #1a1d21;
             --accent: #26c6da;
@@ -23,7 +22,6 @@
         }
 
         [data-theme="light"] {
-            /* Тема 2: Профессиональная светлая */
             --bg-grad: linear-gradient(120deg, #d1d8e0 0%, #a5b1c2 100%);
             --cont-bg: #ffffff;
             --accent: #4a69bd;
@@ -36,7 +34,6 @@
         }
 
         [data-theme="purple"] {
-            /* Тема 3: Космическая фиолетовая */
             --bg-grad: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
             --cont-bg: rgba(255, 255, 255, 0.95);
             --accent: #8E54E9;
@@ -49,7 +46,6 @@
         }
 
         [data-theme="night"] {
-            /* Тема 4: Глубокая ночная */
             --bg-grad: #0a0a0a;
             --cont-bg: #161b22;
             --accent: #58a6ff;
@@ -62,169 +58,124 @@
         }
 
         /* =========================================
-           ОСНОВНЫЕ СТИЛИ СТРАНИЦЫ
+           ОСНОВНЫЕ СТИЛИ (ОПТИМИЗАЦИЯ ПОД ТЕЛЕФОН)
            ========================================= */
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
             background: var(--bg-grad);
             background-attachment: fixed;
             margin: 0;
             display: flex; 
             justify-content: center; 
             min-height: 100vh;
-            padding-top: 60px; 
-            padding-bottom: 60px;
+            padding: 20px 0;
             color: var(--text-main);
-            transition: background 0.4s ease, color 0.4s ease;
+            transition: 0.4s;
+            -webkit-text-size-adjust: 100%;
         }
 
         .container { 
             background: var(--cont-bg); 
-            padding: 40px; 
-            border-radius: 28px; 
-            box-shadow: 0 20px 50px var(--shadow); 
-            width: 100%; 
-            max-width: 500px; 
+            padding: 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 15px 40px var(--shadow); 
+            width: 90%; 
+            max-width: 450px; 
             text-align: center;
             border: 1px solid var(--border);
             position: relative;
-            transition: transform 0.3s ease, background 0.4s ease;
+            height: fit-content;
         }
 
-        h2 { color: var(--accent); margin-bottom: 10px; font-size: 32px; letter-spacing: 1px; }
-        .description { font-size: 15px; color: var(--text-mut); margin-bottom: 35px; }
+        h2 { color: var(--accent); margin-bottom: 5px; font-size: 28px; }
+        .description { font-size: 14px; color: var(--text-mut); margin-bottom: 25px; }
 
         button { 
             width: 100%; 
-            padding: 16px; 
+            min-height: 60px; /* Увеличенная зона для нажатия пальцем */
+            padding: 14px 20px; 
             margin: 10px 0; 
             border: none; 
             border-radius: 14px; 
             cursor: pointer; 
             font-size: 16px; 
             font-weight: 600; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: 0.2s; 
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            touch-action: manipulation; /* Убирает задержку клика */
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn-main { background: var(--btn-grad); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow); filter: brightness(1.1); }
-        .btn-main:active { transform: translateY(0); }
+        .btn-main { background: var(--btn-grad); color: white; }
+        
+        /* Эффект нажатия вместо наведения для смартфонов */
+        button:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
 
         .btn-lvl-1 { background: #1a2e23; color: #a1edb9; border: 1px solid #2d5a3f; }
         .btn-lvl-2 { background: #332b1a; color: #ffeb9c; border: 1px solid #6b5629; }
         .btn-lvl-3 { background: #331a1a; color: #ffb3b3; border: 1px solid #6b2d2d; }
 
-        .section { display: none; animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .section { display: none; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         input { 
-            width: calc(100% - 34px); 
-            padding: 15px; 
+            width: calc(100% - 32px); 
+            min-height: 55px; /* Удобнее вводить на телефоне */
             margin: 15px 0; 
             border: 2px solid var(--border); 
             border-radius: 12px; 
-            background: rgba(0,0,0,0.2); 
+            background: rgba(0,0,0,0.1); 
             color: var(--text-main); 
             text-align: center;
-            font-size: 18px;
-            outline: none;
-            transition: border-color 0.3s;
+            font-size: 18px; /* Предотвращает авто-зум на iPhone */
         }
-        input:focus { border-color: var(--accent); }
 
         .rules-card, .about-card { 
-            text-align: left; 
-            background: var(--card-bg); 
-            padding: 25px; 
-            border-radius: 20px; 
-            font-size: 15px; 
-            line-height: 1.7; 
-            border: 1px solid var(--border);
-            margin-top: 20px;
+            text-align: left; background: var(--card-bg); padding: 18px; 
+            border-radius: 16px; font-size: 14px; line-height: 1.6; border: 1px solid var(--border);
         }
-        .rules-card b, .about-card b { color: var(--accent); }
 
         .hint-card { 
-            text-align: left; 
-            background: rgba(255,255,255,0.05); 
-            border-left: 5px solid var(--accent); 
-            padding: 20px; 
-            margin-top: 20px; 
-            font-size: 14px; 
-            border-radius: 8px;
-            color: var(--text-main);
+            text-align: left; background: rgba(255,255,255,0.05); border-left: 4px solid var(--accent); 
+            padding: 15px; margin-top: 15px; font-size: 14px; border-radius: 4px;
         }
 
-        .back-link { 
-            color: var(--text-mut); 
-            cursor: pointer; 
-            display: inline-block; 
-            margin-top: 30px; 
-            font-size: 15px;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .back-link:hover { color: var(--accent); }
+        .back-link { color: var(--text-mut); cursor: pointer; display: inline-block; margin-top: 25px; padding: 10px; font-size: 15px; }
 
-        /* =========================================
-           ВЫДВИЖНОЕ МЕНЮ ТЕМ (THEME SELECTOR)
-           ========================================= */
+        /* ВЫДВИЖНОЕ МЕНЮ ТЕМ */
         .theme-panel {
-            position: fixed; 
-            bottom: 30px; 
-            right: 30px;
-            display: flex; 
-            flex-direction: column-reverse; 
-            align-items: flex-end;
-            gap: 12px; 
-            z-index: 9999;
+            position: fixed; bottom: 25px; right: 25px;
+            display: flex; flex-direction: column-reverse; align-items: flex-end;
+            gap: 12px; z-index: 9999;
         }
 
         .theme-options {
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px;
-            transform: scale(0); 
-            transform-origin: bottom right;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex; flex-direction: column; gap: 10px;
+            transform: scale(0); transform-origin: bottom right;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
         }
 
-        .theme-panel.active .theme-options { 
-            transform: scale(1); 
-            pointer-events: auto;
-        }
+        .theme-panel.active .theme-options { transform: scale(1); pointer-events: auto; }
 
         .theme-btn {
-            width: auto; 
-            padding: 12px 20px; 
-            margin: 0; 
-            font-size: 14px;
-            border-radius: 30px;
-            white-space: nowrap; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            width: auto; min-height: 45px; padding: 10px 18px; font-size: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-radius: 25px;
         }
 
         .main-toggle {
-            width: 65px; 
-            height: 65px; 
-            border-radius: 50%;
-            background: var(--accent); 
-            color: white;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-size: 28px; 
-            margin: 0; 
-            box-shadow: 0 10px 25px var(--shadow);
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--accent); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; box-shadow: 0 10px 25px var(--shadow);
+            cursor: pointer; -webkit-tap-highlight-color: transparent;
         }
-        .main-toggle:hover { transform: rotate(45deg) scale(1.1); }
     </style>
 </head>
 <body data-theme="dark">
@@ -232,10 +183,10 @@
 <div class="theme-panel" id="themePanel">
     <div class="main-toggle" onclick="togglePanel()">🎨</div>
     <div class="theme-options">
-        <button class="theme-btn btn-main" onclick="setTheme('dark')">💎 Бирюзовая</button>
-        <button class="theme-btn btn-main" onclick="setTheme('night')">🌌 Ночная</button>
-        <button class="theme-btn btn-main" onclick="setTheme('purple')">🚀 Космическая</button>
-        <button class="theme-btn btn-main" onclick="setTheme('light')">☀️ Светлая</button>
+        <button class="theme-btn btn-main" onclick="setTheme('dark')">Бирюзовая</button>
+        <button class="theme-btn btn-main" onclick="setTheme('night')">Ночная</button>
+        <button class="theme-btn btn-main" onclick="setTheme('purple')">Космическая</button>
+        <button class="theme-btn btn-main" onclick="setTheme('light')">Светлая</button>
     </div>
 </div>
 
@@ -243,108 +194,88 @@
     <div id="menu">
         <h2>🔢 LogiCalc</h2>
         <p class="description">Образовательный помощник по логарифмам</p>
-        <button class="btn-main" onclick="showSection('solve')"><span>🔢</span> Решить логарифм</button>
-        <button class="btn-main" onclick="showSection('trainer-menu')"><span>🎯</span> Тренажёр</button>
-        <button class="btn-main" onclick="showSection('help')"><span>📚</span> Справочник правил</button>
-        <button class="btn-main" onclick="showSection('about')"><span>ℹ️</span> О проекте</button>
+        <button class="btn-main" onclick="showSection('solve')">🔢 Решить логарифм</button>
+        <button class="btn-main" onclick="showSection('trainer-menu')">🎯 Тренажёр</button>
+        <button class="btn-main" onclick="showSection('help')">📚 Справочник</button>
+        <button class="btn-main" onclick="showSection('about')">ℹ️ О проекте</button>
     </div>
 
     <div id="solve" class="section">
-        <h3>Математический калькулятор</h3>
-        <p class="description">Выберите, какой элемент уравнения нужно вычислить</p>
-        <button class="btn-main" onclick="showCalc('base')">Найти основание (logₓ b = c)</button>
-        <button class="btn-main" onclick="showCalc('arg')">Найти аргумент (logₐ x = c)</button>
-        <button class="btn-main" onclick="showCalc('res')">Решить логарифм (logₐ b = x)</button>
-        
-        <div id="calc-area" style="display:none; margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
-            <p id="calc-title" style="font-weight: bold; font-size: 18px; color: var(--accent);"></p>
-            <input type="number" id="val1" step="any" placeholder="Введите первое значение">
-            <input type="number" id="val2" step="any" placeholder="Введите второе значение">
-            <button class="btn-main" onclick="calculate()">Вычислить результат</button>
-            <p id="calc-result" style="font-weight:bold; color: #00e676; margin-top:20px; font-size: 22px;"></p>
+        <h3>Калькулятор</h3>
+        <button class="btn-main" onclick="showCalc('base')">Основание (logₓ b = c)</button>
+        <button class="btn-main" onclick="showCalc('arg')">Аргумент (logₐ x = c)</button>
+        <button class="btn-main" onclick="showCalc('res')">Решить (logₐ b = x)</button>
+        <div id="calc-area" style="display:none; margin-top: 20px;">
+            <p id="calc-title" style="font-weight: bold; color: var(--accent);"></p>
+            <input type="number" id="val1" step="any" placeholder="Число 1">
+            <input type="number" id="val2" step="any" placeholder="Число 2">
+            <button class="btn-main" onclick="calculate()">Вычислить</button>
+            <p id="calc-result" style="font-weight:bold; color: #00e676; margin-top:15px; font-size: 20px;"></p>
         </div>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <div class="back-link" onclick="goBack()">↩ Назад в меню</div>
     </div>
 
     <div id="help" class="section">
-        <h3>📚 Справочник правил</h3>
+        <h3>📚 Правила логарифмов</h3>
         <div class="rules-card">
-            <b>1. Основное определение:</b><br>
-            Логарифм числа <i>b</i> по основанию <i>a</i> определяется как показатель степени, в которую нужно возвести <i>a</i>, чтобы получить <i>b</i>.<br>
-            logₐ b = c  ⇔  aᶜ = b (при a > 0, a ≠ 1, b > 0)<br><br>
-            
-            <b>Основные свойства:</b><br>
-            <b>2. Сложение:</b> logₐ x + logₐ y = logₐ(x · y)<br>
-            <b>3. Вычитание:</b> logₐ x - logₐ y = logₐ(x / y)<br>
+            <b>1. Определение:</b> logₐ b = c  ⇔  aᶜ = b<br>
+            <b>2. Сложение:</b> logₐ x + logₐ y = logₐ(x·y)<br>
+            <b>3. Вычитание:</b> logₐ x - logₐ y = logₐ(x/y)<br>
             <b>4. Степень:</b> logₐ(xᵏ) = k · logₐ x<br>
-            <b>5. Переход к новому основанию:</b> logₐ b = log꜀ b / log꜀ a<br><br>
-            
-            <b>Инструкция к калькулятору:</b><br>
-            • Для поиска основания используется формула: x = b<sup>(1/c)</sup><br>
-            • Для поиска аргумента используется формула: x = a<sup>c</sup><br>
-            • Для решения логарифма используется стандартная функция логарифмирования.
+            <b>5. Переход:</b> logₐ b = 1 / logᵦ a<br><br>
+            <b>Работа с инструментами:</b><br>
+            • Основание: x = b<sup>(1/c)</sup><br>
+            • Аргумент: x = a<sup>c</sup><br>
+            • Значение: x = logₐ b
         </div>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <div class="back-link" onclick="goBack()">↩ Назад в меню</div>
     </div>
 
     <div id="trainer-menu" class="section">
-        <h3>🎯 Практический тренажёр</h3>
-        <p class="description">Выберите уровень сложности для тренировки</p>
-        <button class="btn-lvl-1" onclick="startTrainer(1)">🟢 Уровень 1: Основы (Целые числа)</button>
-        <button class="btn-lvl-2" onclick="startTrainer(2)">🟡 Уровень 2: Средний (Расширенный диапазон)</button>
-        <button class="btn-lvl-3" onclick="startTrainer(3)">🔴 Уровень 3: Профессионал (Дроби и корни)</button>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <h3>Уровни сложности</h3>
+        <button class="btn-lvl-1" onclick="startTrainer(1)">Легкий (Основы)</button>
+        <button class="btn-lvl-2" onclick="startTrainer(2)">Средний (Целые)</button>
+        <button class="btn-lvl-3" onclick="startTrainer(3)">Профи (Дроби/Корни)</button>
+        <div class="back-link" onclick="goBack()">↩ Назад в меню</div>
     </div>
 
     <div id="trainer-game" class="section">
-        <h3 id="lvl-display">Задание</h3>
-        <p id="task-text" style="font-size: 30px; font-weight: bold; margin: 30px 0; color: var(--accent); letter-spacing: 2px;"></p>
-        <input type="number" id="user-ans" placeholder="Введите ваш ответ" step="any">
-        <button class="btn-main" onclick="checkAns()">Проверить ответ</button>
+        <h3 id="lvl-display">Тренажёр</h3>
+        <p id="task-text" style="font-size: 28px; font-weight: bold; margin: 25px 0; color: var(--accent);"></p>
+        <input type="number" id="user-ans" placeholder="Ответ" step="any">
+        <button class="btn-main" onclick="checkAns()">Проверить</button>
         <div id="feedback"></div>
-        <button id="next-btn" style="display:none; background: #00e676; color: white;" onclick="continueTrainer()">🎯 Следующее задание</button>
-        <div class="back-link" onclick="showSection('trainer-menu')">↩ Сменить уровень сложности</div>
+        <button id="next-btn" style="display:none; background: #00e676; color: white;" onclick="continueTrainer()">Далее</button>
+        <div class="back-link" onclick="showSection('trainer-menu')">↩ К уровням</div>
     </div>
 
     <div id="about" class="section">
-        <h3>ℹ️ Информация о проекте</h3>
+        <h3>ℹ️ О проекте</h3>
         <div class="about-card">
             <p><b>«Помощь в решении логарифмов»</b> — это некоммерческий образовательный проект, созданный в 2026 году.</p>
-            <p>Разработкой проекта занимался учащийся <b>МБОУ «Ермаковская СШ №1 имени В. П. Брагина» Гордеев Никита Александрович</b> под руководством учителя математики той же школы <b>Исаковой Варвары Владимировны</b>.</p>
+            <p>Разработкой проекта занимался учащийся <b>МБОУ «Ермаковская СШ №1 имени В. П. Брагина» Гордеев Никита Александрович</b> под руководством учителя математики <b>Исаковой Варвары Владимировны</b>.</p>
             <p>Главная цель проекта — упростить освоение темы логарифмов и предоставить школьникам доступный инструмент для самопроверки.</p>
-            <p>Содержание учебных материалов потребуется для сдачи <b>ВПР для 10-х классов</b>, а также охватывает задачи из профильного и базового уровней <b>ЕГЭ</b>.</p>
-            <p>Проект является авторской образовательной разработкой. Его использование не обязательно в рамках школьной программы, однако его можно использовать как эффективный тренажер для подготовки к сдаче экзаменов.</p>
+            <p>Содержание учебных материалов потребуется для сдачи <b>ВПР для 10-х классов</b>, а также для <b>ЕГЭ</b>.</p>
         </div>
-        <button class="btn-main" style="margin-top: 20px;" onclick="window.open('https://erm-school-1.gosuslugi.ru/', '_blank')">🌐 Официальный сайт школы</button>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <button class="btn-main" style="margin-top: 15px;" onclick="window.open('https://erm-school-1.gosuslugi.ru/', '_blank')">Сайт школы</button>
+        <div class="back-link" onclick="goBack()">↩ Назад в меню</div>
     </div>
 </div>
 
 <script>
-    /* =========================================
-       ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ТЕМ
-       ========================================= */
     const panel = document.getElementById('themePanel');
-    
-    // Загрузка сохраненной темы
     window.onload = () => {
         const savedTheme = localStorage.getItem('logicalc-theme') || 'dark';
         document.body.setAttribute('data-theme', savedTheme);
     };
 
-    function togglePanel() { 
-        panel.classList.toggle('active'); 
-    }
-
+    function togglePanel() { panel.classList.toggle('active'); }
     function setTheme(t) { 
         document.body.setAttribute('data-theme', t); 
         localStorage.setItem('logicalc-theme', t);
         togglePanel(); 
     }
 
-    /* =========================================
-       ЛОГИКА НАВИГАЦИИ И КАЛЬКУЛЯТОРА
-       ========================================= */
     let currentLvl = 1, correctAnswer = 0, calcMode = '', currentTask = {};
 
     function showSection(id) {
@@ -359,82 +290,33 @@
     }
 
     function showCalc(m) {
-        calcMode = m; 
-        document.getElementById('calc-area').style.display = 'block';
-        const lbls = {
-            base: 'Вычисление основания x:', 
-            arg: 'Вычисление аргумента x:', 
-            res: 'Вычисление результата x:'
-        };
+        calcMode = m; document.getElementById('calc-area').style.display = 'block';
+        const lbls = {base: 'Ищем основание x:', arg: 'Ищем аргумент x:', res: 'Ищем значение x:'};
         document.getElementById('calc-title').innerText = lbls[m];
-        document.getElementById('calc-result').innerText = '';
     }
 
     function calculate() {
-        let v1 = parseFloat(document.getElementById('val1').value);
-        let v2 = parseFloat(document.getElementById('val2').value);
+        let v1 = parseFloat(document.getElementById('val1').value), v2 = parseFloat(document.getElementById('val2').value);
         if (isNaN(v1) || isNaN(v2)) return;
-        
-        let res = 0;
-        if (calcMode === 'base') res = Math.pow(v1, 1/v2);
-        else if (calcMode === 'arg') res = Math.pow(v1, v2);
-        else if (calcMode === 'res') res = Math.log(v2) / Math.log(v1);
-        
+        let res = calcMode === 'base' ? Math.pow(v1, 1/v2) : calcMode === 'arg' ? Math.pow(v1, v2) : Math.log(v2)/Math.log(v1);
         document.getElementById('calc-result').innerText = "Ответ: " + res.toFixed(3);
     }
 
-    /* =========================================
-       ЛОГИКА ТРЕНАЖЕРА
-       ========================================= */
-    function startTrainer(lvl) { 
-        currentLvl = lvl; 
-        showSection('trainer-game'); 
-        continueTrainer(); 
-    }
+    function startTrainer(lvl) { currentLvl = lvl; showSection('trainer-game'); continueTrainer(); }
 
     function continueTrainer() {
         document.getElementById('next-btn').style.display = 'none';
         document.getElementById('feedback').innerHTML = '';
         document.getElementById('user-ans').value = '';
         let a, b, c;
-
-        if (currentLvl === 1) { 
-            a = [2, 3, 4, 5, 10][Math.floor(Math.random()*5)]; 
-            c = Math.floor(Math.random()*3)+1; 
-            b = Math.pow(a, c); 
-        }
-        else if (currentLvl === 2) { 
-            a = Math.floor(Math.random()*10)+2; 
-            c = Math.floor(Math.random()*4); 
-            b = Math.pow(a, c); 
-        }
-        else { 
-            // Уровень Профи
-            let scenarios = [
-                {a: 4, b: 2, c: 0.5},
-                {a: 9, b: 3, c: 0.5},
-                {a: 2, b: 0.25, c: -2},
-                {a: 5, b: 0.2, c: -1}
-            ];
-            let s = scenarios[Math.floor(Math.random()*scenarios.length)];
-            a = s.a; b = s.b; c = s.c;
-        }
-
+        if (currentLvl === 1) { a = [2, 3, 5, 10][Math.floor(Math.random()*4)]; c = Math.floor(Math.random()*3)+1; b = Math.pow(a, c); }
+        else if (currentLvl === 2) { a = Math.floor(Math.random()*10)+2; c = Math.floor(Math.random()*4); b = Math.pow(a, c); }
+        else { a = 4; b = 2; c = 0.5; }
         let type = Math.floor(Math.random()*3);
         currentTask = {a, b, c, type};
-
-        if (type === 0) { 
-            document.getElementById('task-text').innerHTML = `log<sub>x</sub> ${b} = ${c}`; 
-            correctAnswer = a; 
-        }
-        else if (type === 1) { 
-            document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> x = ${c}`; 
-            correctAnswer = b; 
-        }
-        else { 
-            document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> ${b} = x`; 
-            correctAnswer = c; 
-        }
+        if (type === 0) { document.getElementById('task-text').innerHTML = `log<sub>x</sub> ${b} = ${c}`; correctAnswer = a; }
+        else if (type === 1) { document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> x = ${c}`; correctAnswer = b; }
+        else { document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> ${b} = x`; correctAnswer = c; }
     }
 
     function checkAns() {
@@ -442,26 +324,16 @@
         if (val === "") return;
         let user = parseFloat(val);
         let f = document.getElementById('feedback'), t = currentTask;
-
         if (Math.abs(user - correctAnswer) < 0.01) {
-            f.innerHTML = "<p style='color:#00e676; font-weight:bold; font-size: 20px; margin-top:15px;'>✅ Правильно!</p>";
+            f.innerHTML = "<p style='color:#00e676; font-weight:bold; margin-top:10px;'>✅ Верно!</p>";
             document.getElementById('next-btn').style.display = 'block';
         } else {
             let desc = t.type === 0 ? `x<sup>${t.c}</sup> = ${t.b}` : t.type === 1 ? `${t.a}<sup>${t.c}</sup> = x` : `${t.a}<sup>x</sup> = ${t.b}`;
-            f.innerHTML = `
-                <p style='color:#ef5350; font-weight:bold; margin-top:15px; font-size: 18px;'>❌ Неверно. Правильный ответ: ${correctAnswer}</p>
-                <div class="hint-card">
-                    <b>Математическое обоснование:</b><br>
-                    Согласно определению логарифма (logₐ b = c  ⇔  aᶜ = b), в данном примере получаем уравнение: <br>
-                    <span style="color:var(--accent); font-size: 16px;">${desc}</span>.
-                </div>
-            `;
+            f.innerHTML = `<p style='color:#ef5350; font-weight:bold; margin-top:10px;'>❌ Ответ: ${correctAnswer}</p>
+            <div class="hint-card"><b>Математическое обоснование:</b><br>По определению: ${desc}</div>`;
             document.getElementById('next-btn').style.display = 'block';
         }
     }
 </script>
 </body>
-
 </html>
-
-
