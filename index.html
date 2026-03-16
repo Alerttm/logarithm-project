@@ -58,7 +58,7 @@
         }
 
         /* =========================================
-           ОСНОВНЫЕ СТИЛИ (МАКСИМАЛЬНЫЙ ОБЪЕМ)
+           ОСНОВНЫЕ СТИЛИ
            ========================================= */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -92,7 +92,7 @@
 
         button { 
             width: 100%; 
-            min-height: 60px; /* Увеличенная зона нажатия для телефона */
+            min-height: 60px;
             padding: 16px 20px; 
             margin: 12px 0; 
             border: none; 
@@ -166,52 +166,112 @@
             cursor: pointer; 
             display: inline-block; 
             margin-top: 30px; 
-            padding: 15px; /* Увеличили зону нажатия для ссылки "Назад" */
+            padding: 15px;
             font-size: 15px;
             text-decoration: underline;
         }
 
-        /* =========================================
-           ПАНЕЛЬ ВЫБОРА ТЕМ
-           ========================================= */
-        .theme-panel {
+        /* Панель настроек */
+        .settings-panel {
             position: fixed; bottom: 30px; right: 30px;
             display: flex; flex-direction: column-reverse; align-items: flex-end;
             gap: 12px; z-index: 9999;
         }
 
-        .theme-options {
-            display: flex; flex-direction: column; gap: 10px;
-            transform: scale(0); transform-origin: bottom right;
-            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        .settings-options {
+            background: var(--cont-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            width: 260px;
+            box-shadow: 0 20px 40px var(--shadow);
+            transform: scale(0); 
+            transform-origin: bottom right;
+            transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .theme-panel.active .theme-options { transform: scale(1); pointer-events: auto; }
-
-        .theme-btn {
-            width: auto; padding: 12px 20px; margin: 0; font-size: 14px;
-            border-radius: 30px; box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        .settings-panel.active .settings-options { 
+            transform: scale(1); 
+            pointer-events: auto; 
         }
 
-        .main-toggle {
+        .settings-toggle {
             width: 65px; height: 65px; border-radius: 50%;
             background: var(--accent); color: white;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; box-shadow: 0 10px 25px var(--shadow);
+            font-size: 32px; box-shadow: 0 10px 25px var(--shadow);
             cursor: pointer; -webkit-tap-highlight-color: transparent;
+        }
+
+        .settings-section {
+            text-align: left;
+        }
+        .settings-section h4 {
+            margin: 0 0 10px 0;
+            color: var(--accent);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .precision-control {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .precision-control input {
+            width: 80px;
+            min-height: 40px;
+            margin: 0;
+            font-size: 16px;
+            padding: 8px;
+        }
+        .precision-control button {
+            min-height: 40px;
+            margin: 0;
+            padding: 8px 12px;
+            width: auto;
+            flex: 1;
+        }
+        .theme-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .theme-buttons button {
+            min-height: 45px;
+            margin: 0;
+            justify-content: flex-start;
+            padding: 10px 16px;
         }
     </style>
 </head>
 <body data-theme="dark">
 
-<div class="theme-panel" id="themePanel">
-    <div class="main-toggle" onclick="togglePanel()">🎨</div>
-    <div class="theme-options">
-        <button class="theme-btn btn-main" onclick="setTheme('dark')">💎 Бирюзовая</button>
-        <button class="theme-btn btn-main" onclick="setTheme('night')">🌌 Ночная</button>
-        <button class="theme-btn btn-main" onclick="setTheme('purple')">🚀 Космическая</button>
-        <button class="theme-btn btn-main" onclick="setTheme('light')">☀️ Светлая</button>
+<!-- Панель настроек -->
+<div class="settings-panel" id="settingsPanel">
+    <div class="settings-toggle" onclick="toggleSettings()">⚙️</div>
+    <div class="settings-options">
+        <div class="settings-section">
+            <h4>🔢 Точность</h4>
+            <div class="precision-control">
+                <input type="number" id="decimalsInput" min="0" max="10" step="1" value="3">
+                <button class="btn-main" onclick="setDecimals()">Применить</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h4>🎨 Тема оформления</h4>
+            <div class="theme-buttons">
+                <button class="theme-btn btn-main" onclick="setTheme('dark')">💎 Бирюзовая</button>
+                <button class="theme-btn btn-main" onclick="setTheme('night')">🌌 Ночная</button>
+                <button class="theme-btn btn-main" onclick="setTheme('purple')">🚀 Космическая</button>
+                <button class="theme-btn btn-main" onclick="setTheme('light')">☀️ Светлая</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -232,12 +292,19 @@
         <button class="btn-main" onclick="showCalc('arg')">Найти аргумент (logₐ x = c)</button>
         <button class="btn-main" onclick="showCalc('res')">Решить логарифм (logₐ b = x)</button>
         
+        <!-- Десятичный, натуральный, сложение, вычитание -->
+        <button class="btn-main" onclick="showCalc('log10')">log₁₀ x (десятичный)</button>
+        <button class="btn-main" onclick="showCalc('ln')">ln x (натуральный)</button>
+        <button class="btn-main" onclick="showCalc('add')">Сложение logₐ b + logₐ c</button>
+        <button class="btn-main" onclick="showCalc('sub')">Вычитание logₐ b – logₐ c</button>
+        
         <div id="calc-area" style="display:none; margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
             <p id="calc-title" style="font-weight: bold; font-size: 18px; color: var(--accent);"></p>
-            <input type="number" id="val1" step="any" placeholder="Введите первое число">
-            <input type="number" id="val2" step="any" placeholder="Введите второе число">
+            <input type="number" id="val1" step="any" placeholder="...">
+            <input type="number" id="val2" step="any" placeholder="...">
+            <input type="number" id="val3" step="any" placeholder="..." style="display: none;">
             <button class="btn-main" onclick="calculate()">Вычислить результат</button>
-            <p id="calc-result" style="font-weight:bold; color: #00e676; margin-top:20px; font-size: 22px;"></p>
+            <p id="calc-result" style="font-weight:bold; margin-top:20px; font-size: 18px;"></p>
         </div>
         <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
     </div>
@@ -247,35 +314,41 @@
         <div class="rules-card">
             <b>1. Основное определение:</b><br>
             Логарифм числа <i>b</i> по основанию <i>a</i> определяется как показатель степени, в которую нужно возвести <i>a</i>, чтобы получить <i>b</i>.<br>
-            logₐ b = c  ⇔  aᶜ = b (при a > 0, a ≠ 1, b > 0)<br><br>
+            logₐ b = c  ⇔  aᶜ = b (при a > 0, a ≠ 1, b > 0)<br><br>
             
             <b>Основные свойства логарифмов:</b><br>
             <b>2. Сложение:</b> logₐ x + logₐ y = logₐ(x · y)<br>
             <b>3. Вычитание:</b> logₐ x - logₐ y = logₐ(x / y)<br>
             <b>4. Степень:</b> logₐ(xᵏ) = k · logₐ x<br>
             <b>5. Переход к новому основанию:</b> logₐ b = log꜀ b / log꜀ a<br><br>
+
+            <b>Десятичный и натуральный логарифмы:</b><br>
+            • Десятичный логарифм: log₁₀ x = lg x (основание 10)<br>
+            • Натуральный логарифм: logₑ x = ln x (основание e ≈ 2.718)<br><br>
             
             <b>Инструкция к инструментам:</b><br>
             • Для поиска основания используется формула: x = b<sup>(1/c)</sup><br>
             • Для поиска аргумента используется формула: x = a<sup>c</sup><br>
-            • Для решения логарифма используется стандартная функция вычисления.
+            • Для решения логарифма используется стандартная функция вычисления.<br>
+            • Для десятичного и натурального логарифма введите только аргумент x.<br>
+            • Для сложения и вычитания введите основание a, аргумент b, аргумент c в соответствующие поля.
         </div>
         <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
     </div>
 
     <div id="trainer-menu" class="section">
         <h3>🎯 Практический тренажёр</h3>
-        <p class="description">Выберите уровень сложности для тренировки</p>
-        <button class="btn-lvl-1" onclick="startTrainer(1)">🟢 Уровень 1: Основы (Целые числа)</button>
-        <button class="btn-lvl-2" onclick="startTrainer(2)">🟡 Уровень 2: Средний (Расширенный диапазон)</button>
-        <button class="btn-lvl-3" onclick="startTrainer(3)">🔴 Уровень 3: Профессионал (Дроби и корни)</button>
+        <p class="description">Выберите уровень сложности</p>
+        <button class="btn-lvl-1" onclick="startTrainer(1)">🟢 Уровень 1: Базовый (целые числа)</button>
+        <button class="btn-lvl-2" onclick="startTrainer(2)">🟡 Уровень 2: Повышенный (дроби и отрицательные)</button>
+        <button class="btn-lvl-3" onclick="startTrainer(3)">🔴 Уровень 3: Высокий (сложение/вычитание)</button>
         <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
     </div>
 
     <div id="trainer-game" class="section">
         <h3 id="lvl-display">Задание</h3>
         <p id="task-text" style="font-size: 30px; font-weight: bold; margin: 30px 0; color: var(--accent); letter-spacing: 2px;"></p>
-        <input type="number" id="user-ans" placeholder="Введите ваш ответ" step="any">
+        <input type="number" id="user-ans" placeholder="Ваш ответ" step="any">
         <button class="btn-main" onclick="checkAns()">Проверить ответ</button>
         <div id="feedback"></div>
         <button id="next-btn" style="display:none; background: #00e676; color: white;" onclick="continueTrainer()">🎯 Следующее задание</button>
@@ -286,7 +359,7 @@
         <h3>ℹ️ Информация о проекте</h3>
         <div class="about-card">
             <p><b>«Помощь в решении логарифмов»</b> — это некоммерческий образовательный проект, созданный в 2026 году.</p>
-            <p>Разработкой проекта занимался учащийся <b>МБОУ «Ермаковская СШ №1 имени В. П. Брагина» Гордеев Никита Александрович</b> под руководством учителя математики <b>Исаковой Варвары Владимировны</b>.</p>
+            <p>Разработкой проекта занимался учащийся <b>МБОУ «Ермаковская СШ №1 имени В. П. Брагина» Гордеев Никита Александрович</b> под руководством учителя математики той же школы <b>Исаковой Варвары Владимировны</b>.</p>
             <p>Главная цель проекта — упростить освоение темы логарифмов и предоставить школьникам доступный инструмент для самопроверки.</p>
             <p>Содержание учебных материалов потребуется для сдачи <b>ВПР для 10-х классов</b>, а также охватывает задачи из профильного и базового уровней <b>ЕГЭ</b>.</p>
             <p>Проект является авторской образовательной разработкой. Его использование не обязательно в рамках школьной программы, однако его можно использовать как эффективный тренажер для подготовки к сдаче экзаменов.</p>
@@ -297,93 +370,356 @@
 </div>
 
 <script>
-    const panel = document.getElementById('themePanel');
+    // Глобальные переменные
+    const settingsPanel = document.getElementById('settingsPanel');
+    let currentLvl = 1, correctAnswer = 0, calcMode = '', currentTask = {};
+    let decimals = 3;
+
+    // Загрузка сохранённых настроек
     window.onload = () => {
         const savedTheme = localStorage.getItem('logicalc-theme') || 'dark';
         document.body.setAttribute('data-theme', savedTheme);
+        
+        const savedDecimals = localStorage.getItem('logicalc-decimals');
+        if (savedDecimals !== null) {
+            decimals = parseInt(savedDecimals, 10);
+            document.getElementById('decimalsInput').value = decimals;
+        }
     };
 
-    function togglePanel() { panel.classList.toggle('active'); }
+    function formatNumber(value) {
+        if (value === null || isNaN(value)) return '';
+        if (Math.abs(value - Math.round(value)) < 1e-10) {
+            return Math.round(value).toString();
+        }
+        return value.toFixed(decimals);
+    }
+
+    function toggleSettings() {
+        settingsPanel.classList.toggle('active');
+    }
+
+    function setDecimals() {
+        let input = document.getElementById('decimalsInput');
+        let val = parseInt(input.value, 10);
+        if (isNaN(val) || val < 0) val = 0;
+        if (val > 10) val = 10;
+        decimals = val;
+        localStorage.setItem('logicalc-decimals', decimals);
+    }
+
     function setTheme(t) { 
         document.body.setAttribute('data-theme', t); 
         localStorage.setItem('logicalc-theme', t);
-        togglePanel(); 
     }
-
-    let currentLvl = 1, correctAnswer = 0, calcMode = '', currentTask = {};
 
     function showSection(id) {
         document.getElementById('menu').style.display = 'none';
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
         document.getElementById(id).style.display = 'block';
+        settingsPanel.classList.remove('active');
     }
 
     function goBack() {
         document.getElementById('menu').style.display = 'block';
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+        settingsPanel.classList.remove('active');
     }
 
     function showCalc(m) {
-        calcMode = m; document.getElementById('calc-area').style.display = 'block';
-        const lbls = {
-            base: 'Вычисление основания x:', 
-            arg: 'Вычисление аргумента x:', 
-            res: 'Решить логарифм (logₐ b = x):'
-        };
-        document.getElementById('calc-title').innerText = lbls[m];
+        calcMode = m; 
+        document.getElementById('calc-area').style.display = 'block';
+        const v1 = document.getElementById('val1');
+        const v2 = document.getElementById('val2');
+        const v3 = document.getElementById('val3');
+        const title = document.getElementById('calc-title');
+        
+        v3.style.display = 'none';
+        v2.style.display = 'inline-block';
+        
+        if (m === 'base') {
+            title.innerText = 'Ищем основание (a):';
+            v1.placeholder = 'Введите аргумент (b)';
+            v2.placeholder = 'Введите результат (c)';
+        } else if (m === 'arg') {
+            title.innerText = 'Ищем аргумент (b):';
+            v1.placeholder = 'Введите основание (a)';
+            v2.placeholder = 'Введите результат (c)';
+        } else if (m === 'res') {
+            title.innerText = 'Решить logₐ b = x:';
+            v1.placeholder = 'Введите основание (a)';
+            v2.placeholder = 'Введите аргумент (b)';
+        } else if (m === 'log10') {
+            title.innerText = 'Десятичный логарифм log₁₀ x = ?';
+            v1.placeholder = 'Введите аргумент x (x > 0)';
+            v2.style.display = 'none';
+        } else if (m === 'ln') {
+            title.innerText = 'Натуральный логарифм ln x = ?';
+            v1.placeholder = 'Введите аргумент x (x > 0)';
+            v2.style.display = 'none';
+        } else if (m === 'add') {
+            title.innerText = 'Сложение: logₐ b + logₐ c';
+            v1.placeholder = 'Основание a (a>0, a≠1)';
+            v2.placeholder = 'Аргумент b (b>0)';
+            v3.style.display = 'inline-block';
+            v3.placeholder = 'Аргумент c (c>0)';
+        } else if (m === 'sub') {
+            title.innerText = 'Вычитание: logₐ b – logₐ c';
+            v1.placeholder = 'Основание a (a>0, a≠1)';
+            v2.placeholder = 'Аргумент b (b>0)';
+            v3.style.display = 'inline-block';
+            v3.placeholder = 'Аргумент c (c>0)';
+        }
         document.getElementById('calc-result').innerText = '';
     }
 
     function calculate() {
         let v1 = parseFloat(document.getElementById('val1').value);
         let v2 = parseFloat(document.getElementById('val2').value);
-        if (isNaN(v1) || isNaN(v2)) return;
+        let v3 = parseFloat(document.getElementById('val3').value);
+        let resEl = document.getElementById('calc-result');
+        
+        if (calcMode === 'log10' || calcMode === 'ln') {
+            if (isNaN(v1)) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: введите аргумент!";
+                return;
+            }
+            if (v1 <= 0) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: аргумент должен быть > 0!";
+                return;
+            }
+            let res = (calcMode === 'log10') ? Math.log10(v1) : Math.log(v1);
+            resEl.style.color = "#00e676";
+            resEl.innerText = "Ответ: " + formatNumber(res);
+            return;
+        }
+        
+        if (calcMode === 'add' || calcMode === 'sub') {
+            if (isNaN(v1) || isNaN(v2) || isNaN(v3)) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: заполните все поля!";
+                return;
+            }
+            let a = v1, b = v2, c = v3;
+            
+            if (a <= 0 || a === 1) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: основание a должно быть > 0 и ≠ 1!";
+                return;
+            }
+            if (b <= 0 || c <= 0) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: аргументы должны быть > 0!";
+                return;
+            }
+            
+            let res;
+            if (calcMode === 'add') {
+                res = Math.log(b * c) / Math.log(a);
+            } else {
+                res = Math.log(b / c) / Math.log(a);
+            }
+            resEl.style.color = "#00e676";
+            resEl.innerText = "Ответ: " + formatNumber(res);
+            return;
+        }
+        
+        if (isNaN(v1) || isNaN(v2)) {
+            resEl.style.color = "#ef5350";
+            resEl.innerText = "Ошибка: заполните все поля!";
+            return;
+        }
+
+        if (calcMode === 'base') {
+            if (v1 === 1 && v2 === 0) {
+                resEl.style.color = "#26c6da";
+                resEl.innerText = "Ответ: любое a > 0 и a ≠ 1";
+                return;
+            }
+            if (v1 <= 0) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: аргумент b должен быть > 0!";
+                return;
+            }
+            if (v1 !== 1 && v2 === 0) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Нет решений (x^0 всегда 1)";
+                return;
+            }
+        }
+
+        if (calcMode === 'res') {
+            if (v1 <= 0 || v1 === 1 || v2 <= 0) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: a > 0, a ≠ 1, b > 0!";
+                return;
+            }
+        } else if (calcMode === 'arg') {
+            if (v1 <= 0 || v1 === 1) {
+                resEl.style.color = "#ef5350";
+                resEl.innerText = "Ошибка: основание a > 0 и a ≠ 1!";
+                return;
+            }
+        }
+
         let res = 0;
         if (calcMode === 'base') res = Math.pow(v1, 1/v2);
         else if (calcMode === 'arg') res = Math.pow(v1, v2);
-        else if (calcMode === 'res') res = Math.log(v2) / Math.log(v1);
-        document.getElementById('calc-result').innerText = "Ответ: " + res.toFixed(3);
+        else if (calcMode === 'res') {
+            if (v2 === 1) res = 0; 
+            else res = Math.log(v2) / Math.log(v1);
+        }
+        
+        resEl.style.color = "#00e676";
+        resEl.innerText = "Ответ: " + formatNumber(res);
     }
 
-    function startTrainer(lvl) { currentLvl = lvl; showSection('trainer-game'); continueTrainer(); }
+    // ==================== ТРЕНАЖЁР ====================
+
+    // Предопределённые тройки для уровня 2 (все числа конечные)
+    const level2Triples = [
+        { a: 2, b: 1, c: 0 },
+        { a: 2, b: 2, c: 1 },
+        { a: 2, b: 4, c: 2 },
+        { a: 2, b: 8, c: 3 },
+        { a: 2, b: 0.5, c: -1 },
+        { a: 2, b: 0.25, c: -2 },
+        { a: 3, b: 1, c: 0 },
+        { a: 3, b: 3, c: 1 },
+        { a: 3, b: 9, c: 2 },
+        { a: 3, b: 27, c: 3 },
+        { a: 3, b: 1/3, c: -1 },
+        { a: 3, b: 1/9, c: -2 },
+        { a: 4, b: 1, c: 0 },
+        { a: 4, b: 4, c: 1 },
+        { a: 4, b: 16, c: 2 },
+        { a: 4, b: 2, c: 0.5 },
+        { a: 4, b: 0.5, c: -0.5 },
+        { a: 5, b: 1, c: 0 },
+        { a: 5, b: 5, c: 1 },
+        { a: 5, b: 25, c: 2 },
+        { a: 5, b: 0.2, c: -1 },
+        { a: 5, b: 0.04, c: -2 },
+        { a: 10, b: 1, c: 0 },
+        { a: 10, b: 10, c: 1 },
+        { a: 10, b: 100, c: 2 },
+        { a: 10, b: 0.1, c: -1 },
+        { a: 10, b: 0.01, c: -2 }
+    ];
+
+    function startTrainer(lvl) { 
+        currentLvl = lvl; 
+        showSection('trainer-game'); 
+        continueTrainer(); 
+    }
 
     function continueTrainer() {
         document.getElementById('next-btn').style.display = 'none';
         document.getElementById('feedback').innerHTML = '';
         document.getElementById('user-ans').value = '';
-        let a, b, c;
-        if (currentLvl === 1) { 
-            a = [2, 3, 4, 5, 10][Math.floor(Math.random()*5)]; 
-            c = Math.floor(Math.random()*3)+1; 
-            b = Math.pow(a, c); 
-        } else if (currentLvl === 2) { 
-            a = Math.floor(Math.random()*10)+2; 
-            c = Math.floor(Math.random()*4); 
-            b = Math.pow(a, c); 
-        } else { 
-            let sc = [{a:4,b:2,c:0.5}, {a:9,b:3,c:0.5}, {a:2,b:0.25,c:-2}, {a:5,b:0.2,c:-1}];
-            let s = sc[Math.floor(Math.random()*sc.length)];
-            a=s.a; b=s.b; c=s.c;
+
+        if (currentLvl === 1) {
+            // Базовый уровень: целые числа
+            let a = [2, 3, 4, 5, 10][Math.floor(Math.random() * 5)];
+            let c = Math.floor(Math.random() * 4); // 0..3
+            let b = Math.pow(a, c);
+            generateTaskL1(a, b, c);
+        } 
+        else if (currentLvl === 2) {
+            // Повышенный уровень: выбираем случайную тройку из списка
+            let triple = level2Triples[Math.floor(Math.random() * level2Triples.length)];
+            // С вероятностью 1/3 меняем тип задачи
+            let type = Math.floor(Math.random() * 3);
+            // Корректировка для type=0 при c=0 (бесконечное множество решений)
+            if (triple.c === 0 && type === 0) type = 1;
+            currentTask = { a: triple.a, b: triple.b, c: triple.c, type: type };
+
+            if (type === 0) {
+                document.getElementById('task-text').innerHTML = `log<sub>x</sub> ${formatNumber(triple.b)} = ${formatNumber(triple.c)}`;
+                correctAnswer = triple.a;
+            } else if (type === 1) {
+                document.getElementById('task-text').innerHTML = `log<sub>${formatNumber(triple.a)}</sub> x = ${formatNumber(triple.c)}`;
+                correctAnswer = (triple.c === 0) ? 1 : triple.b;
+            } else {
+                document.getElementById('task-text').innerHTML = `log<sub>${formatNumber(triple.a)}</sub> ${formatNumber(triple.b)} = x`;
+                correctAnswer = triple.c;
+            }
+        } 
+        else if (currentLvl === 3) {
+            // Высокий уровень: сложение/вычитание логарифмов с одинаковым основанием.
+            // Будем брать основание из списка [2,3,4,5,8,9,16] и целые показатели m,n от -2 до 3.
+            // Тогда b = a^m, c = a^n, результат = m ± n (целое число).
+            let bases = [2, 3, 4, 5, 8, 9, 16];
+            let a = bases[Math.floor(Math.random() * bases.length)];
+            let m = Math.floor(Math.random() * 6) - 2; // -2..3
+            let n = Math.floor(Math.random() * 6) - 2; // -2..3
+            let b = Math.pow(a, m);
+            let c = Math.pow(a, n);
+            let op = Math.random() < 0.5 ? '+' : '-';
+            let result = (op === '+') ? m + n : m - n;
+            
+            let taskText = `log<sub>${a}</sub> ${formatNumber(b)} ${op} log<sub>${a}</sub> ${formatNumber(c)} = ?`;
+            document.getElementById('task-text').innerHTML = taskText;
+            correctAnswer = result;
+            currentTask = { type: 3, op: op, a: a, b: b, c: c, m: m, n: n };
         }
-        let type = Math.floor(Math.random()*3);
-        currentTask = {a, b, c, type};
-        if (type === 0) { document.getElementById('task-text').innerHTML = `log<sub>x</sub> ${b} = ${c}`; correctAnswer = a; }
-        else if (type === 1) { document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> x = ${c}`; correctAnswer = b; }
-        else { document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> ${b} = x`; correctAnswer = c; }
+    }
+
+    // Для уровня 1 (базовый) оставляем старую генерацию
+    function generateTaskL1(a, b, c) {
+        let type = Math.floor(Math.random() * 3);
+        if (c === 0 && type === 0) type = 1;
+        currentTask = { a, b, c, type };
+
+        if (type === 0) {
+            document.getElementById('task-text').innerHTML = `log<sub>x</sub> ${b} = ${c}`;
+            correctAnswer = a;
+        } else if (type === 1) {
+            document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> x = ${c}`;
+            correctAnswer = (c === 0) ? 1 : b;
+        } else {
+            document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> ${b} = x`;
+            correctAnswer = c;
+        }
     }
 
     function checkAns() {
         let val = document.getElementById('user-ans').value.replace(',', '.');
         if (val === "") return;
         let user = parseFloat(val);
-        let f = document.getElementById('feedback'), t = currentTask;
+        let f = document.getElementById('feedback');
+        let t = currentTask;
+
         if (Math.abs(user - correctAnswer) < 0.01) {
             f.innerHTML = "<p style='color:#00e676; font-weight:bold; font-size: 20px; margin-top:15px;'>✅ Правильно!</p>";
             document.getElementById('next-btn').style.display = 'block';
         } else {
-            let desc = t.type === 0 ? `x<sup>${t.c}</sup> = ${t.b}` : t.type === 1 ? `${t.a}<sup>${t.c}</sup> = x` : `${t.a}<sup>x</sup> = ${t.b}`;
-            f.innerHTML = `<p style='color:#ef5350; font-weight:bold; margin-top:15px; font-size: 18px;'>❌ Неверно. Ответ: ${correctAnswer}</p>
-                <div class="hint-card"><b>Математическое обоснование:</b><br>Согласно определению логарифма (logₐ b = c ⇔ aᶜ = b), получаем: <br><span style="color:var(--accent); font-size:16px;">${desc}</span></div>`;
+            let desc = '';
+            if (currentLvl === 3) {
+                // Уровень 3: сложение/вычитание
+                if (t.op === '+') {
+                    desc = `log<sub>${t.a}</sub> ${formatNumber(t.b)} + log<sub>${t.a}</sub> ${formatNumber(t.c)} = ` +
+                           `log<sub>${t.a}</sub>(${formatNumber(t.b)}·${formatNumber(t.c)}) = ` +
+                           `log<sub>${t.a}</sub> ${formatNumber(t.b * t.c)} = ${formatNumber(correctAnswer)}`;
+                } else {
+                    desc = `log<sub>${t.a}</sub> ${formatNumber(t.b)} - log<sub>${t.a}</sub> ${formatNumber(t.c)} = ` +
+                           `log<sub>${t.a}</sub>(${formatNumber(t.b)}/${formatNumber(t.c)}) = ` +
+                           `log<sub>${t.a}</sub> ${formatNumber(t.b / t.c)} = ${formatNumber(correctAnswer)}`;
+                }
+            } else {
+                // Уровни 1-2
+                if (t.type === 0) {
+                    desc = `x<sup>${t.c}</sup> = ${formatNumber(t.b)}`;
+                } else if (t.type === 1) {
+                    desc = `${formatNumber(t.a)}<sup>${t.c}</sup> = x`;
+                } else {
+                    desc = `${formatNumber(t.a)}<sup>x</sup> = ${formatNumber(t.b)}`;
+                }
+            }
+            f.innerHTML = `<p style='color:#ef5350; font-weight:bold; margin-top:15px; font-size: 18px;'>❌ Неверно. Ответ: ${formatNumber(correctAnswer)}</p>
+                <div class="hint-card"><b>Математическое обоснование:</b><br>${desc}</div>`;
             document.getElementById('next-btn').style.display = 'block';
         }
     }
