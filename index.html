@@ -204,7 +204,9 @@
             background: var(--accent); color: white;
             display: flex; align-items: center; justify-content: center;
             font-size: 32px; box-shadow: 0 10px 25px var(--shadow);
-            cursor: pointer; -webkit-tap-highlight-color: transparent;
+            cursor: pointer; 
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .settings-section {
@@ -248,28 +250,33 @@
             justify-content: flex-start;
             padding: 10px 16px;
         }
+        
+        /* Исправление для телефонов */
+        button, .settings-toggle, .back-link {
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body data-theme="dark">
 
 <!-- Панель настроек -->
 <div class="settings-panel" id="settingsPanel">
-    <div class="settings-toggle" onclick="toggleSettings()">⚙️</div>
+    <div class="settings-toggle" id="settingsToggle" ontouchstart="toggleSettings()" onclick="toggleSettings()">⚙️</div>
     <div class="settings-options">
         <div class="settings-section">
-            <h4>🔢 Точность</h4>
+            <h4>🔢 Точность (только калькулятор)</h4>
             <div class="precision-control">
                 <input type="number" id="decimalsInput" min="0" max="10" step="1" value="3">
-                <button class="btn-main" onclick="setDecimals()">Применить</button>
+                <button class="btn-main" ontouchstart="setDecimals()" onclick="setDecimals()">Применить</button>
             </div>
         </div>
         <div class="settings-section">
             <h4>🎨 Тема оформления</h4>
             <div class="theme-buttons">
-                <button class="theme-btn btn-main" onclick="setTheme('dark')">💎 Бирюзовая</button>
-                <button class="theme-btn btn-main" onclick="setTheme('night')">🌌 Ночная</button>
-                <button class="theme-btn btn-main" onclick="setTheme('purple')">🚀 Космическая</button>
-                <button class="theme-btn btn-main" onclick="setTheme('light')">☀️ Светлая</button>
+                <button class="theme-btn btn-main" ontouchstart="setTheme('dark')" onclick="setTheme('dark')">💎 Бирюзовая</button>
+                <button class="theme-btn btn-main" ontouchstart="setTheme('night')" onclick="setTheme('night')">🌌 Ночная</button>
+                <button class="theme-btn btn-main" ontouchstart="setTheme('purple')" onclick="setTheme('purple')">🚀 Космическая</button>
+                <button class="theme-btn btn-main" ontouchstart="setTheme('light')" onclick="setTheme('light')">☀️ Светлая</button>
             </div>
         </div>
     </div>
@@ -279,34 +286,33 @@
     <div id="menu">
         <h2>🔢 LogiCalc</h2>
         <p class="description">Образовательный помощник по логарифмам</p>
-        <button class="btn-main" onclick="showSection('solve')"><span>🔢</span> Решить логарифм</button>
-        <button class="btn-main" onclick="showSection('trainer-menu')"><span>🎯</span> Тренажёр</button>
-        <button class="btn-main" onclick="showSection('help')"><span>📚</span> Справочник правил</button>
-        <button class="btn-main" onclick="showSection('about')"><span>ℹ️</span> О проекте</button>
+        <button class="btn-main" ontouchstart="showSection('solve')" onclick="showSection('solve')"><span>🔢</span> Решить логарифм</button>
+        <button class="btn-main" ontouchstart="showSection('trainer-menu')" onclick="showSection('trainer-menu')"><span>🎯</span> Тренажёр</button>
+        <button class="btn-main" ontouchstart="showSection('help')" onclick="showSection('help')"><span>📚</span> Справочник правил</button>
+        <button class="btn-main" ontouchstart="showSection('about')" onclick="showSection('about')"><span>ℹ️</span> О проекте</button>
     </div>
 
     <div id="solve" class="section">
         <h3>🔢 Математический калькулятор</h3>
         <p class="description">Выберите, какой элемент уравнения нужно вычислить</p>
-        <button class="btn-main" onclick="showCalc('base')">Найти основание (logₓ b = c)</button>
-        <button class="btn-main" onclick="showCalc('arg')">Найти аргумент (logₐ x = c)</button>
-        <button class="btn-main" onclick="showCalc('res')">Решить логарифм (logₐ b = x)</button>
+        <button class="btn-main" ontouchstart="showCalc('base')" onclick="showCalc('base')">Найти основание (logₓ b = c)</button>
+        <button class="btn-main" ontouchstart="showCalc('arg')" onclick="showCalc('arg')">Найти аргумент (logₐ x = c)</button>
+        <button class="btn-main" ontouchstart="showCalc('res')" onclick="showCalc('res')">Решить логарифм (logₐ b = x)</button>
         
-        <!-- Десятичный, натуральный, сложение, вычитание -->
-        <button class="btn-main" onclick="showCalc('log10')">log₁₀ x (десятичный)</button>
-        <button class="btn-main" onclick="showCalc('ln')">ln x (натуральный)</button>
-        <button class="btn-main" onclick="showCalc('add')">Сложение logₐ b + logₐ c</button>
-        <button class="btn-main" onclick="showCalc('sub')">Вычитание logₐ b – logₐ c</button>
+        <button class="btn-main" ontouchstart="showCalc('log10')" onclick="showCalc('log10')">log₁₀ x (десятичный)</button>
+        <button class="btn-main" ontouchstart="showCalc('ln')" onclick="showCalc('ln')">ln x (натуральный)</button>
+        <button class="btn-main" ontouchstart="showCalc('add')" onclick="showCalc('add')">Сложение logₐ b + logₐ c</button>
+        <button class="btn-main" ontouchstart="showCalc('sub')" onclick="showCalc('sub')">Вычитание logₐ b – logₐ c</button>
         
         <div id="calc-area" style="display:none; margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
             <p id="calc-title" style="font-weight: bold; font-size: 18px; color: var(--accent);"></p>
             <input type="number" id="val1" step="any" placeholder="...">
             <input type="number" id="val2" step="any" placeholder="...">
             <input type="number" id="val3" step="any" placeholder="..." style="display: none;">
-            <button class="btn-main" onclick="calculate()">Вычислить результат</button>
+            <button class="btn-main" ontouchstart="calculate()" onclick="calculate()">Вычислить результат</button>
             <p id="calc-result" style="font-weight:bold; margin-top:20px; font-size: 18px;"></p>
         </div>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
     </div>
 
     <div id="help" class="section">
@@ -333,26 +339,26 @@
             • Для десятичного и натурального логарифма введите только аргумент x.<br>
             • Для сложения и вычитания введите основание a, аргумент b, аргумент c в соответствующие поля.
         </div>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
     </div>
 
     <div id="trainer-menu" class="section">
         <h3>🎯 Практический тренажёр</h3>
         <p class="description">Выберите уровень сложности</p>
-        <button class="btn-lvl-1" onclick="startTrainer(1)">🟢 Уровень 1: Базовый (целые числа)</button>
-        <button class="btn-lvl-2" onclick="startTrainer(2)">🟡 Уровень 2: Повышенный (дроби и отрицательные)</button>
-        <button class="btn-lvl-3" onclick="startTrainer(3)">🔴 Уровень 3: Высокий (сложение/вычитание)</button>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <button class="btn-lvl-1" ontouchstart="startTrainer(1)" onclick="startTrainer(1)">🟢 Уровень 1: Базовый (целые числа)</button>
+        <button class="btn-lvl-2" ontouchstart="startTrainer(2)" onclick="startTrainer(2)">🟡 Уровень 2: Повышенный (дроби, корни)</button>
+        <button class="btn-lvl-3" ontouchstart="startTrainer(3)" onclick="startTrainer(3)">🔴 Уровень 3: Высокий (сложение/вычитание)</button>
+        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
     </div>
 
     <div id="trainer-game" class="section">
         <h3 id="lvl-display">Задание</h3>
         <p id="task-text" style="font-size: 30px; font-weight: bold; margin: 30px 0; color: var(--accent); letter-spacing: 2px;"></p>
         <input type="number" id="user-ans" placeholder="Ваш ответ" step="any">
-        <button class="btn-main" onclick="checkAns()">Проверить ответ</button>
+        <button class="btn-main" ontouchstart="checkAns()" onclick="checkAns()">Проверить ответ</button>
         <div id="feedback"></div>
-        <button id="next-btn" style="display:none; background: #00e676; color: white;" onclick="continueTrainer()">🎯 Следующее задание</button>
-        <div class="back-link" onclick="showSection('trainer-menu')">↩ Сменить уровень</div>
+        <button id="next-btn" style="display:none; background: #00e676; color: white;" ontouchstart="continueTrainer()" onclick="continueTrainer()">🎯 Следующее задание</button>
+        <div class="back-link" ontouchstart="showSection('trainer-menu')" onclick="showSection('trainer-menu')">↩ Сменить уровень</div>
     </div>
 
     <div id="about" class="section">
@@ -364,8 +370,8 @@
             <p>Содержание учебных материалов потребуется для сдачи <b>ВПР для 10-х классов</b>, а также охватывает задачи из профильного и базового уровней <b>ЕГЭ</b>.</p>
             <p>Проект является авторской образовательной разработкой. Его использование не обязательно в рамках школьной программы, однако его можно использовать как эффективный тренажер для подготовки к сдаче экзаменов.</p>
         </div>
-        <button class="btn-main" style="margin-top: 20px;" onclick="window.open('https://erm-school-1.gosuslugi.ru/', '_blank')"><span>🌐</span> Официальный сайт школы</button>
-        <div class="back-link" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <button class="btn-main" style="margin-top: 20px;" ontouchstart="window.open('https://erm-school-1.gosuslugi.ru/', '_blank')" onclick="window.open('https://erm-school-1.gosuslugi.ru/', '_blank')"><span>🌐</span> Официальный сайт школы</button>
+        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
     </div>
 </div>
 
@@ -375,7 +381,6 @@
     let currentLvl = 1, correctAnswer = 0, calcMode = '', currentTask = {};
     let decimals = 3;
 
-    // Загрузка сохранённых настроек
     window.onload = () => {
         const savedTheme = localStorage.getItem('logicalc-theme') || 'dark';
         document.body.setAttribute('data-theme', savedTheme);
@@ -395,7 +400,8 @@
         return value.toFixed(decimals);
     }
 
-    function toggleSettings() {
+    function toggleSettings(e) {
+        if(e) e.stopPropagation();
         settingsPanel.classList.toggle('active');
     }
 
@@ -411,6 +417,7 @@
     function setTheme(t) { 
         document.body.setAttribute('data-theme', t); 
         localStorage.setItem('logicalc-theme', t);
+        settingsPanel.classList.remove('active');
     }
 
     function showSection(id) {
@@ -578,35 +585,35 @@
 
     // ==================== ТРЕНАЖЁР ====================
 
-    // Предопределённые тройки для уровня 2 (все числа конечные)
+    const level1Bases = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const level1Exponents = [0, 1, 2, 3, 4];
+
     const level2Triples = [
-        { a: 2, b: 1, c: 0 },
-        { a: 2, b: 2, c: 1 },
-        { a: 2, b: 4, c: 2 },
-        { a: 2, b: 8, c: 3 },
-        { a: 2, b: 0.5, c: -1 },
-        { a: 2, b: 0.25, c: -2 },
-        { a: 3, b: 1, c: 0 },
-        { a: 3, b: 3, c: 1 },
-        { a: 3, b: 9, c: 2 },
-        { a: 3, b: 27, c: 3 },
-        { a: 3, b: 1/3, c: -1 },
-        { a: 3, b: 1/9, c: -2 },
-        { a: 4, b: 1, c: 0 },
-        { a: 4, b: 4, c: 1 },
-        { a: 4, b: 16, c: 2 },
-        { a: 4, b: 2, c: 0.5 },
-        { a: 4, b: 0.5, c: -0.5 },
-        { a: 5, b: 1, c: 0 },
-        { a: 5, b: 5, c: 1 },
-        { a: 5, b: 25, c: 2 },
-        { a: 5, b: 0.2, c: -1 },
-        { a: 5, b: 0.04, c: -2 },
-        { a: 10, b: 1, c: 0 },
-        { a: 10, b: 10, c: 1 },
-        { a: 10, b: 100, c: 2 },
-        { a: 10, b: 0.1, c: -1 },
-        { a: 10, b: 0.01, c: -2 }
+        { a: 2, b: 0.5, c: -1 }, { a: 2, b: 0.25, c: -2 }, { a: 2, b: 0.125, c: -3 }, { a: 2, b: 0.0625, c: -4 },
+        { a: 5, b: 0.2, c: -1 }, { a: 5, b: 0.04, c: -2 }, { a: 5, b: 0.008, c: -3 },
+        { a: 10, b: 0.1, c: -1 }, { a: 10, b: 0.01, c: -2 },
+        { a: 4, b: 2, c: 0.5 }, { a: 4, b: 0.5, c: -0.5 }, { a: 4, b: 0.25, c: -1 }, 
+        { a: 4, b: 8, c: 1.5 }, { a: 4, b: 16, c: 2 }, { a: 4, b: 32, c: 2.5 }, { a: 4, b: 64, c: 3 },
+        { a: 8, b: 2, c: 0.5 }, { a: 8, b: 4, c: 0.5 }, { a: 8, b: 0.5, c: -0.5 }, 
+        { a: 8, b: 8, c: 1 }, { a: 8, b: 64, c: 2 },
+        { a: 9, b: 3, c: 0.5 }, { a: 9, b: 9, c: 1 }, { a: 9, b: 81, c: 2 }, { a: 9, b: 27, c: 1.5 }, { a: 9, b: 1/9, c: -1 },
+        { a: 16, b: 2, c: 0.25 }, { a: 16, b: 4, c: 0.5 }, { a: 16, b: 8, c: 0.75 }, 
+        { a: 16, b: 16, c: 1 }, { a: 16, b: 32, c: 1.25 }, { a: 16, b: 64, c: 1.5 }, 
+        { a: 16, b: 128, c: 1.75 }, { a: 16, b: 256, c: 2 }, { a: 16, b: 0.25, c: -0.5 }, { a: 16, b: 0.0625, c: -1 },
+        { a: 25, b: 5, c: 0.5 }, { a: 25, b: 25, c: 1 }, { a: 25, b: 125, c: 1.5 }, 
+        { a: 25, b: 625, c: 2 }, { a: 25, b: 0.2, c: -0.5 }, { a: 25, b: 0.04, c: -1 },
+        { a: 27, b: 27, c: 1 }, { a: 27, b: 729, c: 2 }, { a: 27, b: 1/27, c: -1 },
+        { a: 32, b: 2, c: 0.2 }, { a: 32, b: 4, c: 0.4 }, { a: 32, b: 8, c: 0.6 }, 
+        { a: 32, b: 16, c: 0.8 }, { a: 32, b: 32, c: 1 }, { a: 32, b: 64, c: 1.2 },
+        { a: 32, b: 0.5, c: -0.2 }, { a: 32, b: 0.25, c: -0.4 },
+        { a: 36, b: 6, c: 0.5 }, { a: 36, b: 1/6, c: -0.5 },
+        { a: 49, b: 7, c: 0.5 }, { a: 49, b: 1/7, c: -0.5 },
+        { a: 64, b: 8, c: 0.5 }, { a: 64, b: 64, c: 1 }, { a: 64, b: 512, c: 1.5 }, 
+        { a: 64, b: 4096, c: 2 }, { a: 64, b: 0.125, c: -0.5 }, { a: 64, b: 0.015625, c: -1 },
+        { a: 81, b: 3, c: 0.25 }, { a: 81, b: 9, c: 0.5 }, { a: 81, b: 27, c: 0.75 }, 
+        { a: 81, b: 81, c: 1 }, { a: 81, b: 243, c: 1.25 }, { a: 81, b: 729, c: 1.5 },
+        { a: 81, b: 1/3, c: -0.25 }, { a: 81, b: 1/9, c: -0.5 }, { a: 81, b: 1/81, c: -1 },
+        { a: 100, b: 10, c: 0.5 }, { a: 100, b: 0.1, c: -0.5 }
     ];
 
     function startTrainer(lvl) { 
@@ -621,53 +628,51 @@
         document.getElementById('user-ans').value = '';
 
         if (currentLvl === 1) {
-            // Базовый уровень: целые числа
-            let a = [2, 3, 4, 5, 10][Math.floor(Math.random() * 5)];
-            let c = Math.floor(Math.random() * 4); // 0..3
+            let a = level1Bases[Math.floor(Math.random() * level1Bases.length)];
+            let c = level1Exponents[Math.floor(Math.random() * level1Exponents.length)];
             let b = Math.pow(a, c);
             generateTaskL1(a, b, c);
         } 
         else if (currentLvl === 2) {
-            // Повышенный уровень: выбираем случайную тройку из списка
             let triple = level2Triples[Math.floor(Math.random() * level2Triples.length)];
-            // С вероятностью 1/3 меняем тип задачи
             let type = Math.floor(Math.random() * 3);
-            // Корректировка для type=0 при c=0 (бесконечное множество решений)
             if (triple.c === 0 && type === 0) type = 1;
             currentTask = { a: triple.a, b: triple.b, c: triple.c, type: type };
 
             if (type === 0) {
-                document.getElementById('task-text').innerHTML = `log<sub>x</sub> ${formatNumber(triple.b)} = ${formatNumber(triple.c)}`;
+                document.getElementById('task-text').innerHTML = `log<sub>x</sub> ${triple.b} = ${triple.c}`;
                 correctAnswer = triple.a;
             } else if (type === 1) {
-                document.getElementById('task-text').innerHTML = `log<sub>${formatNumber(triple.a)}</sub> x = ${formatNumber(triple.c)}`;
+                document.getElementById('task-text').innerHTML = `log<sub>${triple.a}</sub> x = ${triple.c}`;
                 correctAnswer = (triple.c === 0) ? 1 : triple.b;
             } else {
-                document.getElementById('task-text').innerHTML = `log<sub>${formatNumber(triple.a)}</sub> ${formatNumber(triple.b)} = x`;
+                document.getElementById('task-text').innerHTML = `log<sub>${triple.a}</sub> ${triple.b} = x`;
                 correctAnswer = triple.c;
             }
         } 
         else if (currentLvl === 3) {
-            // Высокий уровень: сложение/вычитание логарифмов с одинаковым основанием.
-            // Будем брать основание из списка [2,3,4,5,8,9,16] и целые показатели m,n от -2 до 3.
-            // Тогда b = a^m, c = a^n, результат = m ± n (целое число).
-            let bases = [2, 3, 4, 5, 8, 9, 16];
+            const bases = [2, 4, 5, 10];
+            const exponents = [-2, -1, 0, 1, 2];
             let a = bases[Math.floor(Math.random() * bases.length)];
-            let m = Math.floor(Math.random() * 6) - 2; // -2..3
-            let n = Math.floor(Math.random() * 6) - 2; // -2..3
+            let m = exponents[Math.floor(Math.random() * exponents.length)];
+            let n = exponents[Math.floor(Math.random() * exponents.length)];
+            while (m === n) n = exponents[Math.floor(Math.random() * exponents.length)];
             let b = Math.pow(a, m);
             let c = Math.pow(a, n);
             let op = Math.random() < 0.5 ? '+' : '-';
             let result = (op === '+') ? m + n : m - n;
-            
-            let taskText = `log<sub>${a}</sub> ${formatNumber(b)} ${op} log<sub>${a}</sub> ${formatNumber(c)} = ?`;
-            document.getElementById('task-text').innerHTML = taskText;
+            let fmt = (x) => {
+                if (Number.isInteger(x)) return x.toString();
+                let s = x.toString();
+                if (s.includes('.')) s = s.replace(/\.?0+$/, '');
+                return s;
+            };
+            document.getElementById('task-text').innerHTML = `log<sub>${a}</sub> ${fmt(b)} ${op} log<sub>${a}</sub> ${fmt(c)} = ?`;
             correctAnswer = result;
             currentTask = { type: 3, op: op, a: a, b: b, c: c, m: m, n: n };
         }
     }
 
-    // Для уровня 1 (базовый) оставляем старую генерацию
     function generateTaskL1(a, b, c) {
         let type = Math.floor(Math.random() * 3);
         if (c === 0 && type === 0) type = 1;
@@ -692,33 +697,35 @@
         let f = document.getElementById('feedback');
         let t = currentTask;
 
-        if (Math.abs(user - correctAnswer) < 0.01) {
+        if (Math.abs(user - correctAnswer) < 0.0001) {
             f.innerHTML = "<p style='color:#00e676; font-weight:bold; font-size: 20px; margin-top:15px;'>✅ Правильно!</p>";
             document.getElementById('next-btn').style.display = 'block';
         } else {
             let desc = '';
             if (currentLvl === 3) {
-                // Уровень 3: сложение/вычитание
+                let product = t.b * t.c;
+                let quotient = t.b / t.c;
+                let fmt = (x) => {
+                    if (Number.isInteger(x)) return x.toString();
+                    let s = x.toString();
+                    if (s.includes('.')) s = s.replace(/\.?0+$/, '');
+                    return s;
+                };
                 if (t.op === '+') {
-                    desc = `log<sub>${t.a}</sub> ${formatNumber(t.b)} + log<sub>${t.a}</sub> ${formatNumber(t.c)} = ` +
-                           `log<sub>${t.a}</sub>(${formatNumber(t.b)}·${formatNumber(t.c)}) = ` +
-                           `log<sub>${t.a}</sub> ${formatNumber(t.b * t.c)} = ${formatNumber(correctAnswer)}`;
+                    desc = `log<sub>${t.a}</sub> ${fmt(t.b)} + log<sub>${t.a}</sub> ${fmt(t.c)} = log<sub>${t.a}</sub>(${fmt(t.b)}·${fmt(t.c)}) = log<sub>${t.a}</sub> ${fmt(product)} = ${t.m + t.n}`;
                 } else {
-                    desc = `log<sub>${t.a}</sub> ${formatNumber(t.b)} - log<sub>${t.a}</sub> ${formatNumber(t.c)} = ` +
-                           `log<sub>${t.a}</sub>(${formatNumber(t.b)}/${formatNumber(t.c)}) = ` +
-                           `log<sub>${t.a}</sub> ${formatNumber(t.b / t.c)} = ${formatNumber(correctAnswer)}`;
+                    desc = `log<sub>${t.a}</sub> ${fmt(t.b)} - log<sub>${t.a}</sub> ${fmt(t.c)} = log<sub>${t.a}</sub>(${fmt(t.b)}/${fmt(t.c)}) = log<sub>${t.a}</sub> ${fmt(quotient)} = ${t.m - t.n}`;
                 }
             } else {
-                // Уровни 1-2
                 if (t.type === 0) {
-                    desc = `x<sup>${t.c}</sup> = ${formatNumber(t.b)}`;
+                    desc = `x<sup>${t.c}</sup> = ${t.b}`;
                 } else if (t.type === 1) {
-                    desc = `${formatNumber(t.a)}<sup>${t.c}</sup> = x`;
+                    desc = `${t.a}<sup>${t.c}</sup> = x`;
                 } else {
-                    desc = `${formatNumber(t.a)}<sup>x</sup> = ${formatNumber(t.b)}`;
+                    desc = `${t.a}<sup>x</sup> = ${t.b}`;
                 }
             }
-            f.innerHTML = `<p style='color:#ef5350; font-weight:bold; margin-top:15px; font-size: 18px;'>❌ Неверно. Ответ: ${formatNumber(correctAnswer)}</p>
+            f.innerHTML = `<p style='color:#ef5350; font-weight:bold; margin-top:15px; font-size: 18px;'>❌ Неверно. Ответ: ${correctAnswer}</p>
                 <div class="hint-card"><b>Математическое обоснование:</b><br>${desc}</div>`;
             document.getElementById('next-btn').style.display = 'block';
         }
