@@ -687,7 +687,6 @@
         if (section) section.style.display = 'block';
         if (id === 'trainer-stats') renderStats();
         if (id === 'about') {
-            // Скрываем блок отзывов при переходе в "О проекте"
             document.getElementById('reviewsSection').style.display = 'none';
         }
     }
@@ -1002,7 +1001,6 @@
     }
     
     // ==================== СИСТЕМА ОТЗЫВОВ (JSONBin.io) ====================
-    // ЗАМЕНИТЕ НА СВОИ ДАННЫЕ ПОСЛЕ РЕГИСТРАЦИИ НА JSONBIN.IO
     const JSONBIN_BIN_ID = '69db6622aaba882197edc372';
     const JSONBIN_API_KEY = '$2a$10$qu8BCpe./wH0K3c.ae/BtuuRkRV9HUPVGE2HL75Iq7ve9xNvWUYRu';
     const JSONBIN_ACCESS_KEY = '$2a$10$iWqsvOOweXQ7MuFj8kmI8.d3j87GEn0Y15frE2JEXvG19nHTa2ttC';
@@ -1025,7 +1023,6 @@
                 const data = await response.json();
                 reviews = data.record.reviews || [];
             } else {
-                // Если бин пустой, создаём начальную структуру
                 reviews = [];
                 await updateRemoteReviews();
             }
@@ -1061,7 +1058,6 @@
             return;
         }
         let html = '';
-        // Сортируем новые сверху
         const sorted = [...reviews].reverse();
         sorted.forEach(r => {
             const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
@@ -1081,7 +1077,6 @@
         });
         list.innerHTML = html;
         
-        // Добавляем обработчики удаления
         document.querySelectorAll('.delete-review-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
@@ -1172,7 +1167,6 @@
             await updateRemoteReviews();
             renderReviews();
             
-            // Очистка и скрытие формы
             document.getElementById('reviewFirstName').value = '';
             document.getElementById('reviewLastName').value = '';
             document.getElementById('reviewText').value = '';
@@ -1183,154 +1177,95 @@
         setStarRating(5);
     }
     
-    // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
-    function attachHandler(element, event, handler) {
+    // ==================== ОБРАБОТЧИКИ СОБЫТИЙ (только click) ====================
+    function attachClick(element, handler) {
         if (!element) return;
-        element.removeEventListener(event, handler);
-        element.addEventListener(event, handler);
+        element.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handler(e);
+        });
     }
     
     // Главное меню
     document.querySelectorAll('[data-action]').forEach(btn => {
         const action = btn.getAttribute('data-action');
-        const handler = (e) => {
+        attachClick(btn, () => {
             if (action === 'solve') showSection('solve');
             else if (action === 'trainer') showSection('trainer-menu');
             else if (action === 'help') showSection('help');
             else if (action === 'about') showSection('about');
-        };
-        attachHandler(btn, 'click', handler);
-        attachHandler(btn, 'touchstart', handler);
+        });
     });
     
     // Кнопки калькулятора
     document.querySelectorAll('[data-calc]').forEach(btn => {
         const calcType = btn.getAttribute('data-calc');
-        const handler = (e) => {
-            showCalc(calcType);
-        };
-        attachHandler(btn, 'click', handler);
-        attachHandler(btn, 'touchstart', handler);
+        attachClick(btn, () => showCalc(calcType));
     });
     
     // Кнопки тренажёра (меню)
     document.querySelectorAll('[data-trainer-action]').forEach(btn => {
         const action = btn.getAttribute('data-trainer-action');
-        const handler = (e) => {
+        attachClick(btn, () => {
             if (action === 'levels') showSection('trainer-levels');
             else if (action === 'stats') showSection('trainer-stats');
-        };
-        attachHandler(btn, 'click', handler);
-        attachHandler(btn, 'touchstart', handler);
+        });
     });
     
     // Кнопки уровней тренажёра
     document.querySelectorAll('[data-trainer-level]').forEach(btn => {
         const level = parseInt(btn.getAttribute('data-trainer-level'));
-        const handler = (e) => {
-            startTrainer(level);
-        };
-        attachHandler(btn, 'click', handler);
-        attachHandler(btn, 'touchstart', handler);
+        attachClick(btn, () => startTrainer(level));
     });
     
     // Кнопки "Назад" (data-back)
     document.querySelectorAll('[data-back]').forEach(btn => {
         const backTo = btn.getAttribute('data-back');
-        const handler = (e) => {
-            if (backTo === 'menu') {
-                goBackToMenu();
-            } else if (backTo === 'trainer-menu') {
-                showSection('trainer-menu');
-            } else if (backTo === 'trainer-levels') {
-                showSection('trainer-levels');
-            } else {
-                goBackToMenu();
-            }
-        };
-        attachHandler(btn, 'click', handler);
-        attachHandler(btn, 'touchstart', handler);
+        attachClick(btn, () => {
+            if (backTo === 'menu') goBackToMenu();
+            else if (backTo === 'trainer-menu') showSection('trainer-menu');
+            else if (backTo === 'trainer-levels') showSection('trainer-levels');
+            else goBackToMenu();
+        });
     });
     
     // Кнопка "Проверить ответ"
-    const checkBtn = document.getElementById('checkAnsBtn');
-    if (checkBtn) {
-        const handler = (e) => { checkAns(); };
-        attachHandler(checkBtn, 'click', handler);
-        attachHandler(checkBtn, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('checkAnsBtn'), checkAns);
     
     // Кнопка "Следующее задание"
-    const nextBtn = document.getElementById('next-btn');
-    if (nextBtn) {
-        const handler = (e) => { continueTrainer(); };
-        attachHandler(nextBtn, 'click', handler);
-        attachHandler(nextBtn, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('next-btn'), continueTrainer);
     
     // Кнопка "Вычислить"
-    const calcBtn = document.getElementById('calculateBtn');
-    if (calcBtn) {
-        const handler = (e) => { calculate(); };
-        attachHandler(calcBtn, 'click', handler);
-        attachHandler(calcBtn, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('calculateBtn'), calculate);
     
     // Кнопка сброса статистики
-    const resetStatsBtn = document.getElementById('resetStatsBtn');
-    if (resetStatsBtn) {
-        const handler = (e) => { resetStats(); };
-        attachHandler(resetStatsBtn, 'click', handler);
-        attachHandler(resetStatsBtn, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('resetStatsBtn'), resetStats);
     
     // Кнопка сайта школы
-    const schoolBtn = document.getElementById('schoolSiteBtn');
-    if (schoolBtn) {
-        const handler = (e) => { window.open('https://erm-school-1.gosuslugi.ru/', '_blank'); };
-        attachHandler(schoolBtn, 'click', handler);
-        attachHandler(schoolBtn, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('schoolSiteBtn'), () => {
+        window.open('https://erm-school-1.gosuslugi.ru/', '_blank');
+    });
     
     // Настройки
-    const settingsToggle = document.getElementById('settingsToggle');
-    if (settingsToggle) {
-        const handler = (e) => { 
-            e.stopPropagation();
-            e.preventDefault();
-            toggleSettings(); 
-        };
-        attachHandler(settingsToggle, 'click', handler);
-        attachHandler(settingsToggle, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('settingsToggle'), (e) => {
+        e.stopPropagation();
+        toggleSettings(e);
+    });
     
-    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-    if (closeSettingsBtn) {
-        const handler = (e) => {
-            e.stopPropagation();
-            closeSettingsPanel();
-        };
-        attachHandler(closeSettingsBtn, 'click', handler);
-        attachHandler(closeSettingsBtn, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('closeSettingsBtn'), (e) => {
+        e.stopPropagation();
+        closeSettingsPanel();
+    });
     
-    const setDecimalsBtn = document.getElementById('setDecimalsBtn');
-    if (setDecimalsBtn) {
-        const handler = (e) => { setDecimals(); };
-        attachHandler(setDecimalsBtn, 'click', handler);
-        attachHandler(setDecimalsBtn, 'touchstart', handler);
-    }
+    attachClick(document.getElementById('setDecimalsBtn'), setDecimals);
     
     // Кнопки тем оформления
     document.querySelectorAll('[data-theme]').forEach(btn => {
         const theme = btn.getAttribute('data-theme');
-        const handler = (e) => { 
+        attachClick(btn, (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            setTheme(theme); 
-        };
-        attachHandler(btn, 'click', handler);
-        attachHandler(btn, 'touchstart', handler);
+            setTheme(theme);
+        });
     });
 </script>
 </body>
