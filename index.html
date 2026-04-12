@@ -119,6 +119,29 @@
         .btn-lvl-1 { background: #1a2e23; color: #a1edb9; border: 1px solid #2d5a3f; }
         .btn-lvl-2 { background: #332b1a; color: #ffeb9c; border: 1px solid #6b5629; }
         .btn-lvl-3 { background: #331a1a; color: #ffb3b3; border: 1px solid #6b2d2d; }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+        .stat-card h4 {
+            margin: 0 0 10px 0;
+            color: var(--accent);
+        }
+        .stat-card p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .stat-progress {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
 
         .section { display: none; animation: slideUp 0.5s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -169,6 +192,7 @@
             padding: 15px;
             font-size: 15px;
             text-decoration: underline;
+            touch-action: manipulation;
         }
 
         /* Панель настроек */
@@ -192,6 +216,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            position: relative;
         }
 
         .settings-panel.active .settings-options { 
@@ -251,9 +276,129 @@
             padding: 10px 16px;
         }
         
-        /* Исправление для телефонов */
-        button, .settings-toggle, .back-link {
-            touch-action: manipulation;
+        .two-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .two-buttons button {
+            flex: 1;
+            margin: 12px 0;
+        }
+
+        /* Крестик закрытия */
+        .close-settings {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-mut);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+            margin: 0;
+            min-height: auto;
+        }
+        .close-settings:hover {
+            background: rgba(128,128,128,0.2);
+        }
+
+        /* ========= СТИЛИ ДЛЯ ОТЗЫВОВ ========= */
+        .reviews-container {
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+        .review-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .review-author {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .review-rating {
+            color: gold;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        .review-text {
+            margin: 10px 0;
+            color: var(--text-main);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .review-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-mut);
+        }
+        .delete-review-btn {
+            background: transparent;
+            border: 1px solid #ef5350;
+            color: #ef5350;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            min-height: auto;
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .delete-review-btn:hover {
+            background: #ef5350;
+            color: white;
+        }
+        .add-review-form {
+            margin-top: 20px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+        .rating-select {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        .star-rating {
+            display: flex;
+            gap: 5px;
+        }
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.2s;
+        }
+        .star.active {
+            color: gold;
+        }
+        .small-note {
+            font-size: 12px;
+            color: var(--text-mut);
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -261,22 +406,23 @@
 
 <!-- Панель настроек -->
 <div class="settings-panel" id="settingsPanel">
-    <div class="settings-toggle" id="settingsToggle" ontouchstart="toggleSettings()" onclick="toggleSettings()">⚙️</div>
+    <div class="settings-toggle" id="settingsToggle">⚙️</div>
     <div class="settings-options">
+        <button class="close-settings" id="closeSettingsBtn" aria-label="Закрыть">✖</button>
         <div class="settings-section">
             <h4>🔢 Точность (только калькулятор)</h4>
             <div class="precision-control">
                 <input type="number" id="decimalsInput" min="0" max="10" step="1" value="3">
-                <button class="btn-main" ontouchstart="setDecimals()" onclick="setDecimals()">Применить</button>
+                <button class="btn-main" id="setDecimalsBtn">Применить</button>
             </div>
         </div>
         <div class="settings-section">
             <h4>🎨 Тема оформления</h4>
             <div class="theme-buttons">
-                <button class="theme-btn btn-main" ontouchstart="setTheme('dark')" onclick="setTheme('dark')">💎 Бирюзовая</button>
-                <button class="theme-btn btn-main" ontouchstart="setTheme('night')" onclick="setTheme('night')">🌌 Ночная</button>
-                <button class="theme-btn btn-main" ontouchstart="setTheme('purple')" onclick="setTheme('purple')">🚀 Космическая</button>
-                <button class="theme-btn btn-main" ontouchstart="setTheme('light')" onclick="setTheme('light')">☀️ Светлая</button>
+                <button class="theme-btn btn-main" data-theme="dark">💎 Бирюзовая</button>
+                <button class="theme-btn btn-main" data-theme="night">🌌 Ночная</button>
+                <button class="theme-btn btn-main" data-theme="purple">🚀 Космическая</button>
+                <button class="theme-btn btn-main" data-theme="light">☀️ Светлая</button>
             </div>
         </div>
     </div>
@@ -286,33 +432,33 @@
     <div id="menu">
         <h2>🔢 LogiCalc</h2>
         <p class="description">Образовательный помощник по логарифмам</p>
-        <button class="btn-main" ontouchstart="showSection('solve')" onclick="showSection('solve')"><span>🔢</span> Решить логарифм</button>
-        <button class="btn-main" ontouchstart="showSection('trainer-menu')" onclick="showSection('trainer-menu')"><span>🎯</span> Тренажёр</button>
-        <button class="btn-main" ontouchstart="showSection('help')" onclick="showSection('help')"><span>📚</span> Справочник правил</button>
-        <button class="btn-main" ontouchstart="showSection('about')" onclick="showSection('about')"><span>ℹ️</span> О проекте</button>
+        <button class="btn-main" data-action="solve"><span>🔢</span> Решить логарифм</button>
+        <button class="btn-main" data-action="trainer"><span>🎯</span> Тренажёр</button>
+        <button class="btn-main" data-action="help"><span>📚</span> Справочник правил</button>
+        <button class="btn-main" data-action="about"><span>ℹ️</span> О проекте</button>
     </div>
 
     <div id="solve" class="section">
         <h3>🔢 Математический калькулятор</h3>
         <p class="description">Выберите, какой элемент уравнения нужно вычислить</p>
-        <button class="btn-main" ontouchstart="showCalc('base')" onclick="showCalc('base')">Найти основание (logₓ b = c)</button>
-        <button class="btn-main" ontouchstart="showCalc('arg')" onclick="showCalc('arg')">Найти аргумент (logₐ x = c)</button>
-        <button class="btn-main" ontouchstart="showCalc('res')" onclick="showCalc('res')">Решить логарифм (logₐ b = x)</button>
+        <button class="btn-main" data-calc="base">Найти основание (logₓ b = c)</button>
+        <button class="btn-main" data-calc="arg">Найти аргумент (logₐ x = c)</button>
+        <button class="btn-main" data-calc="res">Решить логарифм (logₐ b = x)</button>
         
-        <button class="btn-main" ontouchstart="showCalc('log10')" onclick="showCalc('log10')">log₁₀ x (десятичный)</button>
-        <button class="btn-main" ontouchstart="showCalc('ln')" onclick="showCalc('ln')">ln x (натуральный)</button>
-        <button class="btn-main" ontouchstart="showCalc('add')" onclick="showCalc('add')">Сложение logₐ b + logₐ c</button>
-        <button class="btn-main" ontouchstart="showCalc('sub')" onclick="showCalc('sub')">Вычитание logₐ b – logₐ c</button>
+        <button class="btn-main" data-calc="log10">log₁₀ x (десятичный)</button>
+        <button class="btn-main" data-calc="ln">ln x (натуральный)</button>
+        <button class="btn-main" data-calc="add">Сложение logₐ b + logₐ c</button>
+        <button class="btn-main" data-calc="sub">Вычитание logₐ b – logₐ c</button>
         
         <div id="calc-area" style="display:none; margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
             <p id="calc-title" style="font-weight: bold; font-size: 18px; color: var(--accent);"></p>
             <input type="number" id="val1" step="any" placeholder="...">
             <input type="number" id="val2" step="any" placeholder="...">
             <input type="number" id="val3" step="any" placeholder="..." style="display: none;">
-            <button class="btn-main" ontouchstart="calculate()" onclick="calculate()">Вычислить результат</button>
+            <button class="btn-main" id="calculateBtn">Вычислить результат</button>
             <p id="calc-result" style="font-weight:bold; margin-top:20px; font-size: 18px;"></p>
         </div>
-        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <div class="back-link" data-back="menu">↩ Вернуться в главное меню</div>
     </div>
 
     <div id="help" class="section">
@@ -339,48 +485,152 @@
             • Для десятичного и натурального логарифма введите только аргумент x.<br>
             • Для сложения и вычитания введите основание a, аргумент b, аргумент c в соответствующие поля.
         </div>
-        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <div class="back-link" data-back="menu">↩ Вернуться в главное меню</div>
     </div>
 
     <div id="trainer-menu" class="section">
         <h3>🎯 Практический тренажёр</h3>
-        <p class="description">Выберите уровень сложности</p>
-        <button class="btn-lvl-1" ontouchstart="startTrainer(1)" onclick="startTrainer(1)">🟢 Уровень 1: Базовый (целые числа)</button>
-        <button class="btn-lvl-2" ontouchstart="startTrainer(2)" onclick="startTrainer(2)">🟡 Уровень 2: Повышенный (дроби, корни)</button>
-        <button class="btn-lvl-3" ontouchstart="startTrainer(3)" onclick="startTrainer(3)">🔴 Уровень 3: Высокий (сложение/вычитание)</button>
-        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <p class="description">Выберите действие</p>
+        <div class="two-buttons">
+            <button class="btn-main" data-trainer-action="levels">🎮 Тренажёр</button>
+            <button class="btn-main" data-trainer-action="stats">📊 Статистика</button>
+        </div>
+        <div class="back-link" data-back="menu">↩ Вернуться в главное меню</div>
+    </div>
+    
+    <div id="trainer-levels" class="section">
+        <h3>🎯 Выберите уровень сложности</h3>
+        <button class="btn-lvl-1" data-trainer-level="1">🟢 Уровень 1: Базовый (целые числа)</button>
+        <button class="btn-lvl-2" data-trainer-level="2">🟡 Уровень 2: Повышенный (дроби, корни)</button>
+        <button class="btn-lvl-3" data-trainer-level="3">🔴 Уровень 3: Высокий (сложение/вычитание)</button>
+        <div class="back-link" data-back="trainer-menu">↩ Назад</div>
+    </div>
+    
+    <div id="trainer-stats" class="section">
+        <h3>📊 Статистика решений</h3>
+        <div id="stats-container"></div>
+        <button class="btn-main" id="resetStatsBtn">🔄 Сбросить статистику</button>
+        <div class="back-link" data-back="trainer-menu">↩ Назад</div>
     </div>
 
     <div id="trainer-game" class="section">
         <h3 id="lvl-display">Задание</h3>
         <p id="task-text" style="font-size: 30px; font-weight: bold; margin: 30px 0; color: var(--accent); letter-spacing: 2px;"></p>
         <input type="number" id="user-ans" placeholder="Ваш ответ" step="any">
-        <button class="btn-main" ontouchstart="checkAns()" onclick="checkAns()">Проверить ответ</button>
+        <button class="btn-main" id="checkAnsBtn">Проверить ответ</button>
         <div id="feedback"></div>
-        <button id="next-btn" style="display:none; background: #00e676; color: white;" ontouchstart="continueTrainer()" onclick="continueTrainer()">🎯 Следующее задание</button>
-        <div class="back-link" ontouchstart="showSection('trainer-menu')" onclick="showSection('trainer-menu')">↩ Сменить уровень</div>
+        <button id="next-btn" style="display:none; background: #00e676; color: white;">🎯 Следующее задание</button>
+        <div class="back-link" data-back="trainer-levels">↩ Сменить уровень</div>
     </div>
 
     <div id="about" class="section">
         <h3>ℹ️ Информация о проекте</h3>
         <div class="about-card">
             <p><b>«Помощь в решении логарифмов»</b> — это некоммерческий образовательный проект, созданный в 2026 году.</p>
-            <p>Разработкой проекта занимался учащийся <b>МБОУ «Ермаковская СШ №1 имени В. П. Брагина» Гордеев Никита Александрович</b> под руководством учителя математики <b>Исаковой Варвары Владимировны</b>.</p>
+            <p>Разработкой проекта занимался учащийся <b>МБОУ «Ермаковская СШ №1 имени В. П. Брагина» Гордеев Никита Александрович</b> под руководством учителя математики той же школы <b>Исаковой Варвары Владимировны</b>.</p>
             <p>Главная цель проекта — упростить освоение темы логарифмов и предоставить школьникам доступный инструмент для самопроверки.</p>
             <p>Содержание учебных материалов потребуется для сдачи <b>ВПР для 10-х классов</b>, а также охватывает задачи из профильного и базового уровней <b>ЕГЭ</b>.</p>
             <p>Проект является авторской образовательной разработкой. Его использование не обязательно в рамках школьной программы, однако его можно использовать как эффективный тренажер для подготовки к сдаче экзаменов.</p>
         </div>
-        <button class="btn-main" style="margin-top: 20px;" ontouchstart="window.open('https://erm-school-1.gosuslugi.ru/', '_blank')" onclick="window.open('https://erm-school-1.gosuslugi.ru/', '_blank')"><span>🌐</span> Официальный сайт школы</button>
-        <div class="back-link" ontouchstart="goBack()" onclick="goBack()">↩ Вернуться в главное меню</div>
+        <button class="btn-main" id="schoolSiteBtn"><span>🌐</span> Официальный сайт школы</button>
+        
+        <!-- Кнопка и блок отзывов -->
+        <button class="btn-main" id="toggleReviewsBtn"><span>📝</span> Отзывы</button>
+        <div id="reviewsSection" style="display: none;">
+            <div class="reviews-container">
+                <h4 style="color: var(--accent); margin-bottom: 15px;">💬 Отзывы пользователей</h4>
+                <div id="reviewsList"></div>
+                <button class="btn-main" id="showAddReviewFormBtn">➕ Оставить отзыв</button>
+                <div id="addReviewForm" class="add-review-form" style="display: none;">
+                    <input type="text" id="reviewFirstName" placeholder="Ваше имя" maxlength="30">
+                    <input type="text" id="reviewLastName" placeholder="Ваша фамилия" maxlength="30">
+                    <div class="rating-select">
+                        <span>Оценка:</span>
+                        <div class="star-rating" id="starRating">
+                            <span class="star" data-value="1">☆</span>
+                            <span class="star" data-value="2">☆</span>
+                            <span class="star" data-value="3">☆</span>
+                            <span class="star" data-value="4">☆</span>
+                            <span class="star" data-value="5">☆</span>
+                        </div>
+                    </div>
+                    <textarea id="reviewText" placeholder="Текст отзыва" rows="3" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text-main); font-size: 14px; resize: vertical;"></textarea>
+                    <p class="small-note">Просьба не оставлять отзывы с нецензурной лексикой.</p>
+                    <button class="btn-main" id="submitReviewBtn">Отправить отзыв</button>
+                    <button class="back-link" id="cancelReviewBtn" style="margin-top: 10px;">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="back-link" data-back="menu">↩ Вернуться в главное меню</div>
     </div>
 </div>
 
 <script>
-    // Глобальные переменные
+    // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
     const settingsPanel = document.getElementById('settingsPanel');
     let currentLvl = 1, correctAnswer = 0, calcMode = '', currentTask = {};
     let decimals = 3;
-
+    
+    // Статистика
+    let stats = {
+        1: { correct: 0, wrong: 0 },
+        2: { correct: 0, wrong: 0 },
+        3: { correct: 0, wrong: 0 }
+    };
+    
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+    function loadStats() {
+        const savedStats = localStorage.getItem('logicalc-stats');
+        if (savedStats) {
+            try {
+                const parsed = JSON.parse(savedStats);
+                if (parsed[1] && parsed[2] && parsed[3]) stats = parsed;
+            } catch(e) {}
+        }
+    }
+    
+    function saveStats() {
+        localStorage.setItem('logicalc-stats', JSON.stringify(stats));
+    }
+    
+    function updateStats(level, isCorrect) {
+        if (isCorrect) {
+            stats[level].correct++;
+        } else {
+            stats[level].wrong++;
+        }
+        saveStats();
+    }
+    
+    function renderStats() {
+        const container = document.getElementById('stats-container');
+        if (!container) return;
+        let html = '';
+        for (let i = 1; i <= 3; i++) {
+            const levelName = i === 1 ? '🟢 Базовый' : (i === 2 ? '🟡 Повышенный' : '🔴 Высокий');
+            const total = stats[i].correct + stats[i].wrong;
+            const percent = total > 0 ? Math.round((stats[i].correct / total) * 100) : 0;
+            html += `
+                <div class="stat-card">
+                    <h4>${levelName}</h4>
+                    <p>✅ Верно: ${stats[i].correct}</p>
+                    <p>❌ Неверно: ${stats[i].wrong}</p>
+                    <p>📊 Всего попыток: ${total}</p>
+                    <div class="stat-progress">${percent}% успеха</div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+    
+    function resetStats() {
+        stats = { 1: { correct: 0, wrong: 0 }, 2: { correct: 0, wrong: 0 }, 3: { correct: 0, wrong: 0 } };
+        saveStats();
+        renderStats();
+    }
+    
+    // ==================== НАСТРОЙКИ ====================
     window.onload = () => {
         const savedTheme = localStorage.getItem('logicalc-theme') || 'dark';
         document.body.setAttribute('data-theme', savedTheme);
@@ -390,8 +640,11 @@
             decimals = parseInt(savedDecimals, 10);
             document.getElementById('decimalsInput').value = decimals;
         }
+        
+        loadStats();
+        initReviews();
     };
-
+    
     function formatNumber(value) {
         if (value === null || isNaN(value)) return '';
         if (Math.abs(value - Math.round(value)) < 1e-10) {
@@ -399,12 +652,19 @@
         }
         return value.toFixed(decimals);
     }
-
+    
     function toggleSettings(e) {
-        if(e) e.stopPropagation();
+        if(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
         settingsPanel.classList.toggle('active');
     }
-
+    
+    function closeSettingsPanel() {
+        settingsPanel.classList.remove('active');
+    }
+    
     function setDecimals() {
         let input = document.getElementById('decimalsInput');
         let val = parseInt(input.value, 10);
@@ -413,26 +673,31 @@
         decimals = val;
         localStorage.setItem('logicalc-decimals', decimals);
     }
-
-    function setTheme(t) { 
-        document.body.setAttribute('data-theme', t); 
-        localStorage.setItem('logicalc-theme', t);
-        settingsPanel.classList.remove('active');
+    
+    function setTheme(theme) { 
+        document.body.setAttribute('data-theme', theme); 
+        localStorage.setItem('logicalc-theme', theme);
     }
-
+    
+    // ==================== НАВИГАЦИЯ ====================
     function showSection(id) {
         document.getElementById('menu').style.display = 'none';
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-        settingsPanel.classList.remove('active');
+        const section = document.getElementById(id);
+        if (section) section.style.display = 'block';
+        if (id === 'trainer-stats') renderStats();
+        if (id === 'about') {
+            // Скрываем блок отзывов при переходе в "О проекте"
+            document.getElementById('reviewsSection').style.display = 'none';
+        }
     }
-
-    function goBack() {
+    
+    function goBackToMenu() {
         document.getElementById('menu').style.display = 'block';
         document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-        settingsPanel.classList.remove('active');
     }
-
+    
+    // ==================== КАЛЬКУЛЯТОР ====================
     function showCalc(m) {
         calcMode = m; 
         document.getElementById('calc-area').style.display = 'block';
@@ -479,7 +744,7 @@
         }
         document.getElementById('calc-result').innerText = '';
     }
-
+    
     function calculate() {
         let v1 = parseFloat(document.getElementById('val1').value);
         let v2 = parseFloat(document.getElementById('val2').value);
@@ -582,9 +847,8 @@
         resEl.style.color = "#00e676";
         resEl.innerText = "Ответ: " + formatNumber(res);
     }
-
+    
     // ==================== ТРЕНАЖЁР ====================
-
     const level1Bases = [2, 3, 4, 5, 6, 7, 8, 9, 10];
     const level1Exponents = [0, 1, 2, 3, 4];
 
@@ -615,25 +879,28 @@
         { a: 81, b: 1/3, c: -0.25 }, { a: 81, b: 1/9, c: -0.5 }, { a: 81, b: 1/81, c: -1 },
         { a: 100, b: 10, c: 0.5 }, { a: 100, b: 0.1, c: -0.5 }
     ];
-
+    
+    let currentTrainerLvl = 1;
+    
     function startTrainer(lvl) { 
-        currentLvl = lvl; 
+        currentTrainerLvl = lvl;
+        currentLvl = lvl;
         showSection('trainer-game'); 
         continueTrainer(); 
     }
-
+    
     function continueTrainer() {
         document.getElementById('next-btn').style.display = 'none';
         document.getElementById('feedback').innerHTML = '';
         document.getElementById('user-ans').value = '';
 
-        if (currentLvl === 1) {
+        if (currentTrainerLvl === 1) {
             let a = level1Bases[Math.floor(Math.random() * level1Bases.length)];
             let c = level1Exponents[Math.floor(Math.random() * level1Exponents.length)];
             let b = Math.pow(a, c);
             generateTaskL1(a, b, c);
         } 
-        else if (currentLvl === 2) {
+        else if (currentTrainerLvl === 2) {
             let triple = level2Triples[Math.floor(Math.random() * level2Triples.length)];
             let type = Math.floor(Math.random() * 3);
             if (triple.c === 0 && type === 0) type = 1;
@@ -650,7 +917,7 @@
                 correctAnswer = triple.c;
             }
         } 
-        else if (currentLvl === 3) {
+        else if (currentTrainerLvl === 3) {
             const bases = [2, 4, 5, 10];
             const exponents = [-2, -1, 0, 1, 2];
             let a = bases[Math.floor(Math.random() * bases.length)];
@@ -672,7 +939,7 @@
             currentTask = { type: 3, op: op, a: a, b: b, c: c, m: m, n: n };
         }
     }
-
+    
     function generateTaskL1(a, b, c) {
         let type = Math.floor(Math.random() * 3);
         if (c === 0 && type === 0) type = 1;
@@ -689,20 +956,23 @@
             correctAnswer = c;
         }
     }
-
+    
     function checkAns() {
         let val = document.getElementById('user-ans').value.replace(',', '.');
         if (val === "") return;
         let user = parseFloat(val);
         let f = document.getElementById('feedback');
         let t = currentTask;
-
-        if (Math.abs(user - correctAnswer) < 0.0001) {
+        let isCorrect = Math.abs(user - correctAnswer) < 0.0001;
+        
+        updateStats(currentTrainerLvl, isCorrect);
+        
+        if (isCorrect) {
             f.innerHTML = "<p style='color:#00e676; font-weight:bold; font-size: 20px; margin-top:15px;'>✅ Правильно!</p>";
             document.getElementById('next-btn').style.display = 'block';
         } else {
             let desc = '';
-            if (currentLvl === 3) {
+            if (currentTrainerLvl === 3) {
                 let product = t.b * t.c;
                 let quotient = t.b / t.c;
                 let fmt = (x) => {
@@ -730,6 +1000,338 @@
             document.getElementById('next-btn').style.display = 'block';
         }
     }
+    
+    // ==================== СИСТЕМА ОТЗЫВОВ (JSONBin.io) ====================
+    // ЗАМЕНИТЕ НА СВОИ ДАННЫЕ ПОСЛЕ РЕГИСТРАЦИИ НА JSONBIN.IO
+    const JSONBIN_BIN_ID = '69db6622aaba882197edc372';
+    const JSONBIN_API_KEY = '$2a$10$qu8BCpe./wH0K3c.ae/BtuuRkRV9HUPVGE2HL75Iq7ve9xNvWUYRu';
+    const JSONBIN_ACCESS_KEY = '$2a$10$iWqsvOOweXQ7MuFj8kmI8.d3j87GEn0Y15frE2JEXvG19nHTa2ttC';
+    
+    let currentUserId = localStorage.getItem('review_user_id');
+    if (!currentUserId) {
+        currentUserId = 'user_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('review_user_id', currentUserId);
+    }
+    
+    let reviews = [];
+    let selectedRating = 5;
+    
+    async function loadReviews() {
+        try {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                headers: { 'X-Access-Key': JSONBIN_ACCESS_KEY }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                reviews = data.record.reviews || [];
+            } else {
+                // Если бин пустой, создаём начальную структуру
+                reviews = [];
+                await updateRemoteReviews();
+            }
+            renderReviews();
+        } catch (e) {
+            console.warn('Ошибка загрузки отзывов:', e);
+            reviews = [];
+            renderReviews();
+        }
+    }
+    
+    async function updateRemoteReviews() {
+        try {
+            await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY,
+                    'X-Access-Key': JSONBIN_ACCESS_KEY
+                },
+                body: JSON.stringify({ reviews })
+            });
+        } catch (e) {
+            console.error('Ошибка сохранения отзывов:', e);
+        }
+    }
+    
+    function renderReviews() {
+        const list = document.getElementById('reviewsList');
+        if (!list) return;
+        if (reviews.length === 0) {
+            list.innerHTML = '<p style="color: var(--text-mut); text-align: center;">Пока нет отзывов. Будьте первым!</p>';
+            return;
+        }
+        let html = '';
+        // Сортируем новые сверху
+        const sorted = [...reviews].reverse();
+        sorted.forEach(r => {
+            const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+            const canDelete = (r.userId === currentUserId);
+            html += `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-author">${escapeHtml(r.firstName)} ${escapeHtml(r.lastName)}</span>
+                        <span class="review-rating">${stars}</span>
+                    </div>
+                    <div class="review-text">${escapeHtml(r.text)}</div>
+                    <div class="review-footer">
+                        ${canDelete ? `<button class="delete-review-btn" data-id="${r.id}">Удалить</button>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        list.innerHTML = html;
+        
+        // Добавляем обработчики удаления
+        document.querySelectorAll('.delete-review-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = e.target.dataset.id;
+                reviews = reviews.filter(r => r.id !== id);
+                await updateRemoteReviews();
+                renderReviews();
+            });
+        });
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function initReviews() {
+        const toggleBtn = document.getElementById('toggleReviewsBtn');
+        const reviewsSection = document.getElementById('reviewsSection');
+        const showFormBtn = document.getElementById('showAddReviewFormBtn');
+        const addForm = document.getElementById('addReviewForm');
+        const cancelBtn = document.getElementById('cancelReviewBtn');
+        const submitBtn = document.getElementById('submitReviewBtn');
+        const stars = document.querySelectorAll('.star');
+        
+        toggleBtn.addEventListener('click', () => {
+            const isVisible = reviewsSection.style.display === 'block';
+            reviewsSection.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                loadReviews();
+                addForm.style.display = 'none';
+            }
+        });
+        
+        showFormBtn.addEventListener('click', () => {
+            addForm.style.display = 'block';
+        });
+        
+        cancelBtn.addEventListener('click', () => {
+            addForm.style.display = 'none';
+            document.getElementById('reviewFirstName').value = '';
+            document.getElementById('reviewLastName').value = '';
+            document.getElementById('reviewText').value = '';
+            setStarRating(5);
+        });
+        
+        function setStarRating(rating) {
+            selectedRating = rating;
+            stars.forEach((s, idx) => {
+                if (idx < rating) s.classList.add('active');
+                else s.classList.remove('active');
+                s.textContent = idx < rating ? '★' : '☆';
+            });
+        }
+        
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const val = parseInt(star.dataset.value);
+                setStarRating(val);
+            });
+        });
+        
+        submitBtn.addEventListener('click', async () => {
+            const firstName = document.getElementById('reviewFirstName').value.trim();
+            const lastName = document.getElementById('reviewLastName').value.trim();
+            const text = document.getElementById('reviewText').value.trim();
+            
+            if (!firstName || !lastName || !text) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            if (text.length < 5) {
+                alert('Отзыв должен быть не менее 5 символов');
+                return;
+            }
+            
+            const newReview = {
+                id: Date.now() + '_' + Math.random().toString(36),
+                userId: currentUserId,
+                firstName,
+                lastName,
+                rating: selectedRating,
+                text,
+                timestamp: Date.now()
+            };
+            
+            reviews.push(newReview);
+            await updateRemoteReviews();
+            renderReviews();
+            
+            // Очистка и скрытие формы
+            document.getElementById('reviewFirstName').value = '';
+            document.getElementById('reviewLastName').value = '';
+            document.getElementById('reviewText').value = '';
+            setStarRating(5);
+            addForm.style.display = 'none';
+        });
+        
+        setStarRating(5);
+    }
+    
+    // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
+    function attachHandler(element, event, handler) {
+        if (!element) return;
+        element.removeEventListener(event, handler);
+        element.addEventListener(event, handler);
+    }
+    
+    // Главное меню
+    document.querySelectorAll('[data-action]').forEach(btn => {
+        const action = btn.getAttribute('data-action');
+        const handler = (e) => {
+            if (action === 'solve') showSection('solve');
+            else if (action === 'trainer') showSection('trainer-menu');
+            else if (action === 'help') showSection('help');
+            else if (action === 'about') showSection('about');
+        };
+        attachHandler(btn, 'click', handler);
+        attachHandler(btn, 'touchstart', handler);
+    });
+    
+    // Кнопки калькулятора
+    document.querySelectorAll('[data-calc]').forEach(btn => {
+        const calcType = btn.getAttribute('data-calc');
+        const handler = (e) => {
+            showCalc(calcType);
+        };
+        attachHandler(btn, 'click', handler);
+        attachHandler(btn, 'touchstart', handler);
+    });
+    
+    // Кнопки тренажёра (меню)
+    document.querySelectorAll('[data-trainer-action]').forEach(btn => {
+        const action = btn.getAttribute('data-trainer-action');
+        const handler = (e) => {
+            if (action === 'levels') showSection('trainer-levels');
+            else if (action === 'stats') showSection('trainer-stats');
+        };
+        attachHandler(btn, 'click', handler);
+        attachHandler(btn, 'touchstart', handler);
+    });
+    
+    // Кнопки уровней тренажёра
+    document.querySelectorAll('[data-trainer-level]').forEach(btn => {
+        const level = parseInt(btn.getAttribute('data-trainer-level'));
+        const handler = (e) => {
+            startTrainer(level);
+        };
+        attachHandler(btn, 'click', handler);
+        attachHandler(btn, 'touchstart', handler);
+    });
+    
+    // Кнопки "Назад" (data-back)
+    document.querySelectorAll('[data-back]').forEach(btn => {
+        const backTo = btn.getAttribute('data-back');
+        const handler = (e) => {
+            if (backTo === 'menu') {
+                goBackToMenu();
+            } else if (backTo === 'trainer-menu') {
+                showSection('trainer-menu');
+            } else if (backTo === 'trainer-levels') {
+                showSection('trainer-levels');
+            } else {
+                goBackToMenu();
+            }
+        };
+        attachHandler(btn, 'click', handler);
+        attachHandler(btn, 'touchstart', handler);
+    });
+    
+    // Кнопка "Проверить ответ"
+    const checkBtn = document.getElementById('checkAnsBtn');
+    if (checkBtn) {
+        const handler = (e) => { checkAns(); };
+        attachHandler(checkBtn, 'click', handler);
+        attachHandler(checkBtn, 'touchstart', handler);
+    }
+    
+    // Кнопка "Следующее задание"
+    const nextBtn = document.getElementById('next-btn');
+    if (nextBtn) {
+        const handler = (e) => { continueTrainer(); };
+        attachHandler(nextBtn, 'click', handler);
+        attachHandler(nextBtn, 'touchstart', handler);
+    }
+    
+    // Кнопка "Вычислить"
+    const calcBtn = document.getElementById('calculateBtn');
+    if (calcBtn) {
+        const handler = (e) => { calculate(); };
+        attachHandler(calcBtn, 'click', handler);
+        attachHandler(calcBtn, 'touchstart', handler);
+    }
+    
+    // Кнопка сброса статистики
+    const resetStatsBtn = document.getElementById('resetStatsBtn');
+    if (resetStatsBtn) {
+        const handler = (e) => { resetStats(); };
+        attachHandler(resetStatsBtn, 'click', handler);
+        attachHandler(resetStatsBtn, 'touchstart', handler);
+    }
+    
+    // Кнопка сайта школы
+    const schoolBtn = document.getElementById('schoolSiteBtn');
+    if (schoolBtn) {
+        const handler = (e) => { window.open('https://erm-school-1.gosuslugi.ru/', '_blank'); };
+        attachHandler(schoolBtn, 'click', handler);
+        attachHandler(schoolBtn, 'touchstart', handler);
+    }
+    
+    // Настройки
+    const settingsToggle = document.getElementById('settingsToggle');
+    if (settingsToggle) {
+        const handler = (e) => { 
+            e.stopPropagation();
+            e.preventDefault();
+            toggleSettings(); 
+        };
+        attachHandler(settingsToggle, 'click', handler);
+        attachHandler(settingsToggle, 'touchstart', handler);
+    }
+    
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    if (closeSettingsBtn) {
+        const handler = (e) => {
+            e.stopPropagation();
+            closeSettingsPanel();
+        };
+        attachHandler(closeSettingsBtn, 'click', handler);
+        attachHandler(closeSettingsBtn, 'touchstart', handler);
+    }
+    
+    const setDecimalsBtn = document.getElementById('setDecimalsBtn');
+    if (setDecimalsBtn) {
+        const handler = (e) => { setDecimals(); };
+        attachHandler(setDecimalsBtn, 'click', handler);
+        attachHandler(setDecimalsBtn, 'touchstart', handler);
+    }
+    
+    // Кнопки тем оформления
+    document.querySelectorAll('[data-theme]').forEach(btn => {
+        const theme = btn.getAttribute('data-theme');
+        const handler = (e) => { 
+            e.preventDefault();
+            e.stopPropagation();
+            setTheme(theme); 
+        };
+        attachHandler(btn, 'click', handler);
+        attachHandler(btn, 'touchstart', handler);
+    });
 </script>
 </body>
 </html>
